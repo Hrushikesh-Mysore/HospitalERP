@@ -13,6 +13,7 @@ const RELATED = {
   appointments: ['appointments', 'stats'],
   beds: ['beds', 'patients', 'emergency', 'stats'],
   emergency: ['emergency', 'patients', 'beds', 'stats'],
+  tokens: ['tokens'],
   demo: null, // everything
 }
 export const affects = (event, resource) => {
