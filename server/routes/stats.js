@@ -45,7 +45,7 @@ r.get('/', (req, res) => {
       pendingBookings: db.appointments.filter((a) => a.status === 'scheduled').length,
     },
     doctor: doctorId ? doctorStats(doctorId) : null,
-    weeklyAdmissions: db.admissionLog.slice(-7).map((e) => ({ day: weekday(e.date), admissions: e.count })),
+    weeklyAdmissions: db.admissionLog.slice(-7).map((e) => ({ day: weekday(e.date), admissions: e.count, isToday: e.date === today })),
     admissionHistory: db.admissionLog,
     appointmentsByDept: Object.entries(apptsByDept).map(([dept, count]) => ({ dept, count })),
     activity: db.activity.slice(0, 8),

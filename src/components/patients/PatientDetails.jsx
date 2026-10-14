@@ -1,6 +1,6 @@
 import { Heart, Activity, Thermometer, Droplets } from 'lucide-react'
 import Badge from '../ui/Badge'
-import { statusTone } from './statusTone'
+import { statusTone } from '../../lib/status'
 
 export default function PatientDetails({ patient: p }) {
   const vitals = [

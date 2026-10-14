@@ -1,13 +1,7 @@
 import { Clock, BedDouble } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Button from '../ui/Button'
-
-export const triage = {
-  1: { label: 'Critical', bar: 'bg-red-500', chip: 'bg-red-100 text-red-700' },
-  2: { label: 'Urgent', bar: 'bg-orange-500', chip: 'bg-orange-100 text-orange-700' },
-  3: { label: 'Semi-urgent', bar: 'bg-yellow-400', chip: 'bg-yellow-100 text-yellow-700' },
-  4: { label: 'Non-urgent', bar: 'bg-green-500', chip: 'bg-green-100 text-green-700' },
-}
+import { triage } from '../../lib/status'
 
 const wait = (iso, now) => {
   const s = Math.max(0, Math.floor((now - new Date(iso)) / 1000))

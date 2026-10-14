@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
 import Field, { inputCls } from '../ui/Field'
-import { useToast } from '../ui/Toast'
+import { useToast } from '../../lib/toastStore'
 import { api } from '../../lib/api'
 
 const empty = { name: '', age: '', gender: 'F', phone: '', condition: '', doctorId: '' }

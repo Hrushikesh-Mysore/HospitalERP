@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react'
 import { Plus, CalendarDays } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
+import PageHeader from '../components/ui/PageHeader'
 import Badge from '../components/ui/Badge'
 import Skeleton from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
-import { useToast } from '../components/ui/Toast'
+import { useToast } from '../lib/toastStore'
 import BookAppointmentModal from '../components/appointments/BookAppointmentModal'
-import { useRole } from '../lib/RoleContext'
+import { useRole } from '../lib/roleStore'
+import { daysFromNow } from '../lib/dates'
 import { useFetch } from '../lib/useFetch'
 import { api } from '../lib/api'
 
@@ -21,7 +23,7 @@ export default function Appointments() {
   const pts = useFetch('/patients')
   const docs = useFetch('/doctors')
   const toast = useToast()
-  const days = useMemo(() => Array.from({ length: 7 }, (_, i) => new Date(Date.now() + i * 86400000)), [])
+  const days = useMemo(() => daysFromNow(7), [])
   const [date, setDate] = useState(iso(days[0]))
   const [booking, setBooking] = useState(false)
 
@@ -36,10 +38,8 @@ export default function Appointments() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><h1 className="text-2xl font-extrabold">Appointments</h1><p className="text-sm text-muted">{day.length} on {date}</p></div>
-        <Button onClick={() => setBooking(true)}><Plus size={16} /> Book appointment</Button>
-      </div>
+      <PageHeader title="Appointments" subtitle={`${day.length} on ${date}`}
+        action={<Button onClick={() => setBooking(true)}><Plus size={16} /> Book appointment</Button>} />
       <div className="flex gap-2 overflow-x-auto pb-1">
         {days.map((d) => {
           const k = iso(d), on = k === date
@@ -62,8 +62,8 @@ export default function Appointments() {
           {byDoctor.map(({ d, list }) => (
             <Card key={d.id} title={d.name} action={<Badge tone="gray">{d.department}</Badge>}>
               <ol className="space-y-3 border-l-2 border-brand-100 pl-4">
-                {list.map((a) => (
-                  <li key={a.id} className="relative rounded-xl bg-surface p-3">
+                {list.map((a, i) => (
+                  <li key={a.id} style={{ '--i': i }} className="rise relative rounded-xl bg-surface p-3">
                     <span className="absolute -left-[23px] top-4 h-3 w-3 rounded-full border-2 border-white bg-brand-500" />
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm font-bold">{a.time} · {a.patient}</p>
