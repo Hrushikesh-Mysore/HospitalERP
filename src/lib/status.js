@@ -8,6 +8,8 @@ export const soft = {
   gray: 'bg-neutral-soft text-muted',
 }
 
+export const isInactive = (status) => status === 'cancelled' || status === 'no-show'
+
 export const statCardTone = { brand: 'brand', info: 'blue', warn: 'amber', ok: 'green' }
 
 export const statusTone = { admitted: 'blue', outpatient: 'green', discharged: 'gray' }

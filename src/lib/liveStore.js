@@ -9,7 +9,7 @@ let retry = null
 
 // A write to one resource can change data shown from others (e.g. admitting a bed changes patients and stats).
 const RELATED = {
-  patients: ['patients', 'beds', 'stats', 'appointments'],
+  patients: ['patients', 'beds', 'stats', 'appointments', 'emergency'],
   appointments: ['appointments', 'stats'],
   beds: ['beds', 'patients', 'emergency', 'stats'],
   emergency: ['emergency', 'patients', 'beds', 'stats'],

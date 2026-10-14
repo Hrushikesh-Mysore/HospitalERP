@@ -1,8 +1,9 @@
-import { Heart, Activity, Thermometer, Droplets } from 'lucide-react'
+import { Heart, Activity, Thermometer, Droplets, Pencil, Trash2 } from 'lucide-react'
+import Button from '../ui/Button'
 import Badge from '../ui/Badge'
 import { statusTone } from '../../lib/status'
 
-export default function PatientDetails({ patient: p }) {
+export default function PatientDetails({ patient: p, onEdit, onDelete }) {
   const vitals = [
     { label: 'Heart rate', value: `${p.vitals.heartRate} bpm`, icon: Heart },
     { label: 'Blood pressure', value: p.vitals.bp, icon: Activity },
@@ -15,6 +16,12 @@ export default function PatientDetails({ patient: p }) {
         <p className="text-xl font-extrabold">{p.name}</p>
         <p className="text-sm text-muted">{p.age} yrs · {p.gender} · {p.phone}</p>
         <div className="mt-2"><Badge tone={statusTone[p.status]}>{p.status}</Badge></div>
+        {(onEdit || onDelete) && (
+          <div className="mt-3 flex gap-2">
+            {onEdit && <Button variant="secondary" onClick={onEdit}><Pencil size={14} /> Edit</Button>}
+            {onDelete && <Button variant="secondary" onClick={onDelete} className="!text-danger"><Trash2 size={14} /> Delete</Button>}
+          </div>
+        )}
       </div>
       <div className="rounded-2xl bg-surface p-4 text-sm">
         <p className="text-xs font-semibold text-muted">Condition</p><p className="font-semibold">{p.condition}</p>

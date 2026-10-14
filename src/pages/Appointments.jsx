@@ -14,8 +14,9 @@ import { useFetch } from '../lib/useFetch'
 import { useLiveSync } from '../lib/useLiveSync'
 import { api } from '../lib/api'
 
-const tone = { scheduled: 'amber', confirmed: 'blue', completed: 'green', cancelled: 'red' }
-const next = { scheduled: ['confirmed', 'cancelled'], confirmed: ['completed', 'cancelled'], completed: [], cancelled: [] }
+const tone = { scheduled: 'amber', confirmed: 'blue', completed: 'green', cancelled: 'red', 'no-show': 'gray' }
+const next = { scheduled: ['confirmed', 'cancelled'], confirmed: ['completed', 'cancelled'], completed: [], cancelled: [], 'no-show': [] }
+const label = { confirmed: 'Confirm', completed: 'Complete', cancelled: 'Cancel', 'no-show': 'No-show' }
 const iso = (d) => d.toISOString().slice(0, 10)
 
 export default function Appointments() {
@@ -34,9 +35,12 @@ export default function Appointments() {
   const byDoctor = (docs.data?.doctors ?? []).map((d) => ({ d, list: day.filter((a) => a.doctorId === d.id) })).filter((g) => g.list.length)
 
   const setStatus = async (a, status) => {
-    try { await api(`/appointments/${a.id}`, { method: 'PATCH', body: { status } }); toast(`Marked ${status}`); appts.refetch() }
+    try { await api(`/appointments/${a.id}`, { method: 'PATCH', body: { status } }); toast(status === 'cancelled' ? 'Appointment cancelled - slot is free' : `Marked ${status}`); appts.refetch() }
     catch (e) { toast(e.message, 'error') }
   }
+
+  // No-show only makes sense once the appointment day has started
+  const actions = (a) => [...next[a.status], ...(['scheduled', 'confirmed'].includes(a.status) && a.date <= iso(days[0]) ? ['no-show'] : [])]
 
   return (
     <div className="space-y-6">
@@ -72,10 +76,10 @@ export default function Appointments() {
                       <Badge tone={tone[a.status]}>{a.status}</Badge>
                     </div>
                     <p className="text-xs text-muted">{a.reason}</p>
-                    {next[a.status].length > 0 && (
-                      <div className="mt-2 flex gap-2">
-                        {next[a.status].map((s) => (
-                          <button key={s} onClick={() => setStatus(a, s)} className="rounded-lg border border-line bg-card px-2 py-1 text-xs font-semibold capitalize hover:bg-brand-50">{s === 'cancelled' ? 'Cancel' : s === 'confirmed' ? 'Confirm' : 'Complete'}</button>
+                    {actions(a).length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {actions(a).map((s) => (
+                          <button key={s} onClick={() => setStatus(a, s)} className="rounded-lg border border-line bg-card px-2 py-1 text-xs font-semibold capitalize hover:bg-brand-50">{label[s]}</button>
                         ))}
                       </div>
                     )}
