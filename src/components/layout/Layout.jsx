@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
@@ -15,6 +16,7 @@ export default function Layout() {
   const [tour, setTour] = useState(() => !seen())
   const [help, setHelp] = useState(false)
   const [palette, setPalette] = useState(false)
+  const [resets, setResets] = useState(0)
   const { role } = useRole()
   const { pathname, search } = useLocation()
 
@@ -35,10 +37,12 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen">
-      <Sidebar open={open} onClose={() => setOpen(false)} />
+      <Sidebar open={open} onClose={() => setOpen(false)} onReset={() => setResets((n) => n + 1)} />
       <div className="lg:pl-64">
         <TopBar onMenu={() => setOpen(true)} onSearch={() => setPalette(true)} onHelp={() => setHelp(true)} />
-        <main className="p-4 lg:p-8"><Outlet key={search} /></main>
+        <main className="p-4 lg:p-8">
+          <motion.div key={`${pathname}${search}-${resets}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}><Outlet /></motion.div>
+        </main>
       </div>
       <QuickTour open={tour} onClose={closeTour} />
       <HowToPanel open={help} onClose={() => setHelp(false)} onTour={() => { setHelp(false); setTour(true) }} />
