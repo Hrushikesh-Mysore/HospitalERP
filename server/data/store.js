@@ -1,4 +1,5 @@
 import { buildData } from './seed.js'
+import { removeFile } from '../uploads.js'
 
 export const db = buildData()
 // Soft-deleted patients waiting out their undo window: id -> { patient, appointments, cases, timer }
@@ -6,6 +7,7 @@ export const trash = new Map()
 export function resetDb() {
   trash.forEach((t) => clearTimeout(t.timer))
   trash.clear()
+  db.documents?.forEach((d) => removeFile(d.filename))
   Object.assign(db, buildData())
 }
 export function logActivity(text, type) {

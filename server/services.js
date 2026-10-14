@@ -1,4 +1,5 @@
 import { db, logActivity, trash } from './data/store.js'
+import { removeFile } from './uploads.js'
 import { dayOffset } from './data/seed.js'
 import { HttpError } from './middleware/errorHandler.js'
 
@@ -35,7 +36,11 @@ export function softDeletePatient(patient) {
   db.appointments.filter((a) => a.patientId === patient.id).forEach((a) => { a.patientName = patient.name }) // keep the name once the record is gone
   db.emergency = db.emergency.filter((c) => !cases.includes(c))
   db.patients = db.patients.filter((p) => p.id !== patient.id)
-  const timer = setTimeout(() => trash.delete(patient.id), UNDO_MS)
+  const timer = setTimeout(() => { // undo window over: purge for good, including the patient's uploaded files
+    trash.delete(patient.id)
+    db.documents.filter((d) => d.patientId === patient.id).forEach((d) => removeFile(d.filename))
+    db.documents = db.documents.filter((d) => d.patientId !== patient.id)
+  }, UNDO_MS)
   timer.unref()
   trash.set(patient.id, { patient, changed, cases, timer })
   logActivity(`Patient record deleted: ${patient.name}`, 'alert')

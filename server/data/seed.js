@@ -102,6 +102,7 @@ export function buildData() {
   return {
     patients, doctors, beds, appointments, emergency, admissionLog,
     prescriptions,
+    documents: [], // uploaded patient files (metadata); bytes live in server/uploads
     tokens: [], // first-come-first-served queue tokens; start empty so reset clears them
     activity: [
       { id: 1, text: `${patients[4].name} admitted to General bed G-05`, type: 'admit', at: new Date(now - 2 * 60000).toISOString() },

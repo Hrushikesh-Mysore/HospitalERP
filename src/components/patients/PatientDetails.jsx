@@ -1,6 +1,7 @@
 import { Heart, Activity, Thermometer, Droplets, Pencil, Trash2, Pill } from 'lucide-react'
 import Button from '../ui/Button'
 import PrescriptionCard from './PrescriptionCard'
+import PatientDocuments from './PatientDocuments'
 import { useFetch } from '../../lib/useFetch'
 import { useLiveSync } from '../../lib/useLiveSync'
 import Badge from '../ui/Badge'
@@ -52,6 +53,7 @@ export default function PatientDetails({ patient: p, onEdit, onDelete, onPrescri
           <div className="space-y-3">{rx.data.slice(0, 3).map((x) => <PrescriptionCard key={x.id} rx={x} />)}</div>
         </div>
       )}
+      <PatientDocuments patientId={p.id} />
       <div>
         <p className="mb-3 text-sm font-bold">History</p>
         <ol className="space-y-4 border-l-2 border-brand-100 pl-4">
