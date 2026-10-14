@@ -7,7 +7,7 @@ import { roles } from '../../lib/roles'
 const tasks = {
   Admin: ['Watch live KPIs and charts on Overview', 'Admit or discharge patients on the Beds page', 'Triage the Emergency queue and assign beds', 'Reset demo data from the sidebar when done'],
   Doctor: ['See your appointments and patients on Overview', 'Open My Patients and click a row for vitals and history', 'Confirm or complete your appointments in My Appointments'],
-  Patient: ['Book a visit under Book: pick a doctor, a day, then a free slot', 'Check in on the day of your appointment to get a token', 'My Token shows your place in line and tells you when you are next', 'My Prescriptions lists what your doctor prescribed'],
+  Patient: ['Book a visit under Book: pick a doctor, a day, then a free slot', 'Check in on the day of your appointment to get a token', 'My Token shows your place in line and tells you when you are next', 'My Records lists what your doctor prescribed and lets you upload a photo of a paper prescription'],
   Receptionist: ['Register a new patient under Registration', 'Book a visit under Booking: pick doctor, then a free slot', 'If a slot is taken, choose another when the conflict message shows'],
 }
 

@@ -10,6 +10,7 @@ import HowToPanel from '../help/HowToPanel'
 import CommandPalette from '../help/CommandPalette'
 import { useRole } from '../../lib/roleStore'
 import { access } from '../../lib/roles'
+import WhoAreYou from '../patient/WhoAreYou'
 
 const seen = () => { try { return localStorage.getItem('tourSeen') === '1' } catch { return true } }
 
@@ -18,7 +19,7 @@ export default function Layout() {
   const [help, setHelp] = useState(false)
   const [palette, setPalette] = useState(false)
   const [resets, setResets] = useState(0)
-  const { role } = useRole()
+  const { role, patient } = useRole()
   const { pathname, search } = useLocation()
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function Layout() {
     try { localStorage.setItem('tourSeen', '1') } catch { /* storage unavailable */ }
   }
 
+  if (role === 'Patient' && !patient) return <WhoAreYou />
   if (!access[role].includes(pathname)) return <Navigate to={access[role][0]} replace />
 
   return (

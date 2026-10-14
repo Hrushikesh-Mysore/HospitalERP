@@ -30,5 +30,6 @@ export function requireOwnership(req, ownerDoctorId, what) {
 export const byOf = (req) => {
   const a = req.actor
   if (!a) return { role: 'system', doctorId: null, name: null }
+  if (a.role === 'Patient') return { role: a.role, doctorId: null, name: db.patients.find((p) => p.id === a.patientId)?.name ?? null }
   return { role: a.role, doctorId: a.doctorId, name: a.doctorId ? db.doctors.find((d) => d.id === a.doctorId)?.name ?? null : null }
 }

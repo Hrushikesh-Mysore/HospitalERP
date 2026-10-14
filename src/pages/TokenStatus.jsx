@@ -23,7 +23,7 @@ function CodeForm({ error }) {
 // Patient phone view: opened from the link/QR on the token slip. No sign-in, no layout chrome.
 export default function TokenStatus() {
   const { ref } = useParams()
-  const q = useFetch(`/tokens/${ref ?? 'none'}`)
+  const q = useFetch(`/tokens/${ref ?? 'none'}`, { anon: true })
   useLiveSync({ tokens: q.refetch })
   const t = ref ? q.data : null
 

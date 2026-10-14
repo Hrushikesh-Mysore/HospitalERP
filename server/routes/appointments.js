@@ -22,7 +22,9 @@ const patch = z.object({
 
 const r = Router()
 const expand = (a) => ({ ...a, patient: db.patients.find((p) => p.id === a.patientId)?.name ?? a.patientName, doctor: db.doctors.find((d) => d.id === a.doctorId) })
-r.get('/', (req, res) => res.json(db.appointments.map(expand)))
+// A patient sees their own appointments in full; everyone else's are reduced to "this slot is taken".
+const forPatient = (req, a) => (a.patientId === req.actor.patientId ? expand(a) : { id: a.id, doctorId: a.doctorId, date: a.date, time: a.time, status: a.status })
+r.get('/', (req, res) => res.json(db.appointments.map((a) => (req.actor?.role === 'Patient' ? forPatient(req, a) : expand(a)))))
 r.post('/', validate(create), (req, res) => {
   const patient = find('patients', req.body.patientId, 'Patient')
   find('doctors', req.body.doctorId, 'Doctor')

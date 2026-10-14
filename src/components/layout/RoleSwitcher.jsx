@@ -14,13 +14,14 @@ function DoctorPicker() {
   )
 }
 
-function PatientPicker() {
-  const { patientId, setPatientId } = useRole()
-  const pts = useFetch('/patients')
+function PatientChip() {
+  const { patient, setPatient } = useRole()
+  if (!patient) return null
   return (
-    <select value={patientId} onChange={(e) => setPatientId(e.target.value)} aria-label="I am patient" className={pick}>
-      {(pts.data ?? [{ id: patientId, name: `Patient ${patientId}` }]).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-    </select>
+    <span className="flex items-center gap-1 text-sm">
+      <b className="max-w-28 truncate sm:max-w-40">{patient.name}</b>
+      <button onClick={() => setPatient(null)} className="tap-auto rounded-lg px-2 py-1 text-xs font-semibold text-brand-700 underline">Not you?</button>
+    </span>
   )
 }
 
@@ -30,7 +31,7 @@ export default function RoleSwitcher({ className = '' }) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {role === 'Doctor' && <DoctorPicker />}
-      {role === 'Patient' && <PatientPicker />}
+      {role === 'Patient' && <PatientChip />}
       <select value={role} onChange={(e) => setRole(e.target.value)} aria-label="Switch role"
         className="w-28 rounded-xl border border-line bg-card px-2 py-2 text-sm font-semibold outline-none sm:w-auto sm:px-3 focus:border-brand-500">
         {roles.map((r) => <option key={r}>{r}</option>)}

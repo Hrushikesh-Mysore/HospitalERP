@@ -6,7 +6,7 @@ import { useLiveSync } from '../lib/useLiveSync'
 
 // Public waiting-room board. Shows token codes only, never patient names.
 export default function Display() {
-  const q = useFetch('/tokens')
+  const q = useFetch('/tokens', { anon: true })
   useLiveSync({ tokens: q.refetch })
   const [now, setNow] = useState(() => new Date())
   useEffect(() => {

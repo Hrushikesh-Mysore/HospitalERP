@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Ticket } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
@@ -29,9 +30,10 @@ export default function MyToken() {
   const me = useFetch(`/patients/${patientId}`)
   useLiveSync({ tokens: q.refetch, appointments: appts.refetch, patients: me.refetch })
   const [doctorId, setDoctorId] = useState('')
+  const [fresh, setFresh] = useState(useLocation().state?.fresh ?? null) // token just issued here or from Book
 
   const issue = async (body) => {
-    try { const t = await api('/tokens', { method: 'POST', body }); toast(`Your token is ${t.code}`); q.refetch() }
+    try { const t = await api('/tokens', { method: 'POST', body }); setFresh(t.id); toast(`Your token is ${t.code}`); q.refetch() }
     catch (e) { toast(e.message, 'error') }
   }
 
@@ -45,7 +47,7 @@ export default function MyToken() {
   return (
     <div className="space-y-6">
       <PageHeader title="My token" subtitle="Your place in line, live" />
-      {active.map((t) => <Card key={t.id}><TokenCard token={t} /></Card>)}
+      {active.map((t) => <Card key={t.id}><TokenCard token={t} celebrate={t.id === fresh} /></Card>)}
       {active.length === 0 && (
         <Card>
           <EmptyState icon={Ticket} title="You don't have a token yet" text="Check in for today's visit, or join the line as a walk-in." />
