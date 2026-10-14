@@ -24,7 +24,7 @@ export default function QuickTour({ open, onClose }) {
         <p className="mt-2 max-w-sm text-sm text-muted">{s.text}</p>
       </div>
       <div className="mb-5 flex justify-center gap-1.5">
-        {steps.map((_, n) => <span key={n} className={`h-1.5 rounded-full transition-all ${n === i ? 'w-6 bg-brand-600' : 'w-1.5 bg-slate-200'}`} />)}
+        {steps.map((_, n) => <span key={n} className={`h-1.5 rounded-full transition-all ${n === i ? 'w-6 bg-brand-600' : 'w-1.5 bg-line'}`} />)}
       </div>
       <div className="flex justify-between">
         <Button variant="ghost" onClick={close}>Skip</Button>

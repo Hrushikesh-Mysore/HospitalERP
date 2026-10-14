@@ -1,11 +1,11 @@
-// Single source of truth for status / tone colors.
+// Single source of truth for status / tone colors. Values live in index.css as theme tokens.
 export const soft = {
   brand: 'bg-brand-50 text-brand-600',
-  green: 'bg-green-50 text-ok',
-  amber: 'bg-amber-50 text-amber-600',
-  red: 'bg-red-50 text-danger',
-  blue: 'bg-blue-50 text-info',
-  gray: 'bg-slate-100 text-muted',
+  green: 'bg-ok-soft text-ok',
+  amber: 'bg-warn-soft text-warn-ink',
+  red: 'bg-danger-soft text-danger',
+  blue: 'bg-info-soft text-info',
+  gray: 'bg-neutral-soft text-muted',
 }
 
 export const statCardTone = { brand: 'brand', info: 'blue', warn: 'amber', ok: 'green' }
@@ -13,16 +13,16 @@ export const statCardTone = { brand: 'brand', info: 'blue', warn: 'amber', ok: '
 export const statusTone = { admitted: 'blue', outpatient: 'green', discharged: 'gray' }
 
 export const bedStatus = {
-  free: { tile: 'border-green-200 bg-green-50 text-ok hover:bg-green-100', dot: 'bg-green-400', label: 'Free' },
-  occupied: { tile: 'border-red-200 bg-red-50 text-danger hover:bg-red-100', dot: 'bg-red-400', label: 'Occupied' },
-  cleaning: { tile: 'border-amber-200 bg-amber-50 text-amber-600 hover:bg-amber-100', dot: 'bg-amber-400', label: 'Cleaning' },
+  free: { tile: 'border-ok-line bg-ok-soft text-ok hover:bg-ok-hover', dot: 'bg-ok', label: 'Free' },
+  occupied: { tile: 'border-danger-line bg-danger-soft text-danger hover:bg-danger-hover', dot: 'bg-danger', label: 'Occupied' },
+  cleaning: { tile: 'border-warn-line bg-warn-soft text-warn-ink hover:bg-warn-hover', dot: 'bg-warn', label: 'Cleaning' },
 }
 
 export const triage = {
-  1: { label: 'Critical', bar: 'bg-red-500', chip: 'bg-red-100 text-red-700' },
-  2: { label: 'Urgent', bar: 'bg-orange-500', chip: 'bg-orange-100 text-orange-700' },
-  3: { label: 'Semi-urgent', bar: 'bg-yellow-400', chip: 'bg-yellow-100 text-yellow-700' },
-  4: { label: 'Non-urgent', bar: 'bg-green-500', chip: 'bg-green-100 text-green-700' },
+  1: { label: 'Critical', bar: 'bg-p1', chip: 'bg-p1-soft text-p1-ink' },
+  2: { label: 'Urgent', bar: 'bg-p2', chip: 'bg-p2-soft text-p2-ink' },
+  3: { label: 'Semi-urgent', bar: 'bg-p3', chip: 'bg-p3-soft text-p3-ink' },
+  4: { label: 'Non-urgent', bar: 'bg-p4', chip: 'bg-p4-soft text-p4-ink' },
 }
 
 export const feedTones = { admit: soft.blue, appt: soft.brand, alert: soft.red, discharge: soft.green, bed: soft.amber }

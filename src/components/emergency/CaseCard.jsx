@@ -14,12 +14,12 @@ export default function CaseCard({ c, now, onAssign }) {
   const critical = c.priority === 1 && c.status === 'waiting'
   return (
     <motion.li layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-      className={`relative flex flex-wrap items-center gap-4 overflow-hidden rounded-2xl border bg-card p-4 pl-6 shadow-sm ${critical ? 'animate-pulse border-red-300' : 'border-line'}`}>
+      className={`relative flex flex-wrap items-center gap-4 overflow-hidden rounded-2xl border bg-card p-4 pl-6 shadow-sm ${critical ? 'animate-pulse border-danger-line' : 'border-line'}`}>
       <span className={`absolute inset-y-0 left-0 w-2 ${t.bar}`} />
       <div className="min-w-48 flex-1">
         <div className="flex items-center gap-2">
           <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${t.chip}`}>P{c.priority} · {t.label}</span>
-          {c.status === 'admitted' && <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-bold text-info">Admitted</span>}
+          {c.status === 'admitted' && <span className="rounded-full bg-info-soft px-2.5 py-0.5 text-xs font-bold text-info">Admitted</span>}
         </div>
         <p className="mt-1 font-bold">{c.name} <span className="font-normal text-muted">· {c.age} yrs</span></p>
         <p className="text-sm text-muted">{c.complaint}</p>

@@ -38,7 +38,7 @@ export default function PatientDetails({ patient: p }) {
         <ol className="space-y-4 border-l-2 border-brand-100 pl-4">
           {[...p.history].reverse().map((h, i) => (
             <li key={i} className="relative">
-              <span className="absolute -left-[22px] top-1 h-3 w-3 rounded-full border-2 border-white bg-brand-500" />
+              <span className="absolute -left-[22px] top-1 h-3 w-3 rounded-full border-2 border-card bg-brand-500" />
               <p className="text-sm font-semibold">{h.event}</p>
               <p className="text-xs text-muted">{h.date}</p>
             </li>

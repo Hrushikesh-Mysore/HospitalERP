@@ -12,6 +12,7 @@ import EmptyState from '../components/ui/EmptyState'
 import DoctorWidgets from '../components/overview/DoctorWidgets'
 import ReceptionWidgets from '../components/overview/ReceptionWidgets'
 import { Clock, UserCheck, ClipboardList } from 'lucide-react'
+import { useChartColors } from '../lib/useChartColors'
 import { useRole } from '../lib/roleStore'
 import { todayISO } from '../lib/dates'
 import { feedTones } from '../lib/status'
@@ -26,6 +27,12 @@ const feedIcons = { admit: UserPlus, appt: CalendarDays, alert: Siren, discharge
 
 export default function Overview() {
   const { role, doctorId } = useRole()
+  const c = useChartColors()
+  const tip = {
+    contentStyle: { background: c.card, border: `1px solid ${c.grid}`, borderRadius: 12, color: c.ink },
+    labelStyle: { color: c.ink, fontWeight: 600 },
+    itemStyle: { color: c.ink },
+  }
   const { data, error, loading, refetch } = useFetch(role === 'Doctor' ? `/stats?doctorId=${doctorId}` : '/stats', { interval: 10000 })
 
   if (loading) {
@@ -86,11 +93,11 @@ export default function Overview() {
           <div className="h-64">
             <ResponsiveContainer>
               <LineChart data={weekly}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e8ecf0" vertical={false} />
-                <XAxis dataKey="day" tickLine={false} axisLine={false} interval={0} height={44} tick={<DayTick />} />
-                <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} allowDecimals={false} />
-                <Tooltip />
-                <Line type="monotone" dataKey="admissions" stroke="#0d9488" strokeWidth={3} dot={{ r: 4 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={c.grid} vertical={false} />
+                <XAxis dataKey="day" tickLine={false} axisLine={false} interval={0} height={44} tick={<DayTick fill={c.tick} />} />
+                <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} allowDecimals={false} tick={{ fill: c.tick }} />
+                <Tooltip {...tip} />
+                <Line type="monotone" dataKey="admissions" stroke={c.line} strokeWidth={3} dot={{ r: 4, fill: c.card, stroke: c.line, strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -99,11 +106,11 @@ export default function Overview() {
           <div className="h-64">
             <ResponsiveContainer>
               <BarChart data={deptAppointments}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e8ecf0" vertical={false} />
-                <XAxis dataKey="dept" tickLine={false} axisLine={false} fontSize={12} />
-                <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#14b8a6" radius={[8, 8, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke={c.grid} vertical={false} />
+                <XAxis dataKey="dept" tickLine={false} axisLine={false} fontSize={12} tick={{ fill: c.tick }} />
+                <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} tick={{ fill: c.tick }} />
+                <Tooltip {...tip} cursor={{ fill: c.cursor }} />
+                <Bar dataKey="count" fill={c.bar} radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

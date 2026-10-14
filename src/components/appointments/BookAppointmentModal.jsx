@@ -54,7 +54,7 @@ export default function BookAppointmentModal({ open, onClose, date, patients, do
           <div className="grid grid-cols-4 gap-2">
             {slots.map((s) => (
               <button type="button" key={s} onClick={() => { setTime(s); setError('') }}
-                className={`rounded-xl border px-2 py-2 text-sm font-semibold transition-colors ${time === s ? 'border-brand-600 bg-brand-600 text-white' : 'border-line hover:bg-brand-50'}`}>
+                className={`rounded-xl border px-2 py-2 text-sm font-semibold transition-colors ${time === s ? 'border-brand-600 bg-brand-600 text-on-brand' : 'border-line hover:bg-brand-50'}`}>
                 {s}{doctorId && taken(s) && <span className="block text-[10px] font-medium opacity-70">booked</span>}
               </button>
             ))}
@@ -62,7 +62,7 @@ export default function BookAppointmentModal({ open, onClose, date, patients, do
           <p className="mt-1 text-xs text-muted">Slots marked "booked" will be rejected by the server.</p>
         </div>
         <Field label="Reason"><input className={inputCls} value={reason} onChange={(e) => setReason(e.target.value)} /></Field>
-        {error && <p role="alert" className="flex items-start gap-2 rounded-xl bg-red-50 p-3 text-sm font-medium text-danger"><AlertCircle size={16} className="mt-0.5 shrink-0" />{error}</p>}
+        {error && <p role="alert" className="flex items-start gap-2 rounded-xl bg-danger-soft p-3 text-sm font-medium text-danger"><AlertCircle size={16} className="mt-0.5 shrink-0" />{error}</p>}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
           <Button type="submit" disabled={busy}>{busy ? 'Booking…' : 'Book'}</Button>
