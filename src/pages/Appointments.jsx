@@ -11,6 +11,7 @@ import BookAppointmentModal from '../components/appointments/BookAppointmentModa
 import { useRole } from '../lib/roleStore'
 import { daysFromNow } from '../lib/dates'
 import { useFetch } from '../lib/useFetch'
+import { useLiveSync } from '../lib/useLiveSync'
 import { api } from '../lib/api'
 
 const tone = { scheduled: 'amber', confirmed: 'blue', completed: 'green', cancelled: 'red' }
@@ -22,6 +23,7 @@ export default function Appointments() {
   const appts = useFetch('/appointments')
   const pts = useFetch('/patients')
   const docs = useFetch('/doctors')
+  useLiveSync({ appointments: appts.refetch, patients: pts.refetch })
   const toast = useToast()
   const days = useMemo(() => daysFromNow(7), [])
   const [date, setDate] = useState(iso(days[0]))

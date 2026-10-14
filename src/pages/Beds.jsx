@@ -12,15 +12,17 @@ import BedPopover from '../components/beds/BedPopover'
 import BedActions from '../components/beds/BedActions'
 import OccupancyBar from '../components/beds/OccupancyBar'
 import { useFetch } from '../lib/useFetch'
+import { useLiveSync } from '../lib/useLiveSync'
 import { api } from '../lib/api'
 import { bedStatus } from '../lib/status'
 
 const wards = ['General', 'ICU', 'Pediatrics']
 
 export default function Beds() {
-  const beds = useFetch('/beds', { interval: 5000 })
+  const beds = useFetch('/beds')
   const pts = useFetch('/patients')
   const em = useFetch('/emergency')
+  useLiveSync({ beds: beds.refetch, patients: pts.refetch, emergency: em.refetch })
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const toast = useToast()

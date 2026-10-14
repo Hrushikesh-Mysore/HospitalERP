@@ -9,9 +9,11 @@ import EmptyState from '../components/ui/EmptyState'
 import CaseCard from '../components/emergency/CaseCard'
 import AddCaseModal from '../components/emergency/AddCaseModal'
 import { useFetch } from '../lib/useFetch'
+import { useLiveSync } from '../lib/useLiveSync'
 
 export default function Emergency() {
-  const { data, error, loading, refetch } = useFetch('/emergency', { interval: 5000 })
+  const { data, error, loading, refetch } = useFetch('/emergency')
+  useLiveSync({ emergency: refetch })
   const [now, setNow] = useState(() => Date.now())
   const [adding, setAdding] = useState(false)
   const navigate = useNavigate()
@@ -26,7 +28,7 @@ export default function Emergency() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Emergency" subtitle={`${waiting.length} waiting · refreshes every 5s`}
+      <PageHeader title="Emergency" subtitle={`${waiting.length} waiting`}
         action={<Button onClick={() => setAdding(true)}><Plus size={16} /> Add emergency case</Button>} />
       {loading ? (
         <div className="space-y-3">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-24" />)}</div>

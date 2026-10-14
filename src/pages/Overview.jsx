@@ -4,6 +4,7 @@ import Card from '../components/ui/Card'
 import StatCard from '../components/ui/StatCard'
 import Skeleton from '../components/ui/Skeleton'
 import { useFetch } from '../lib/useFetch'
+import { useLiveSync } from '../lib/useLiveSync'
 import Button from '../components/ui/Button'
 import PageHeader from '../components/ui/PageHeader'
 import DayTick from '../components/overview/DayTick'
@@ -33,7 +34,8 @@ export default function Overview() {
     labelStyle: { color: c.ink, fontWeight: 600 },
     itemStyle: { color: c.ink },
   }
-  const { data, error, loading, refetch } = useFetch(role === 'Doctor' ? `/stats?doctorId=${doctorId}` : '/stats', { interval: 10000 })
+  const { data, error, loading, refetch } = useFetch(role === 'Doctor' ? `/stats?doctorId=${doctorId}` : '/stats')
+  useLiveSync({ stats: refetch })
 
   if (loading) {
     return (
