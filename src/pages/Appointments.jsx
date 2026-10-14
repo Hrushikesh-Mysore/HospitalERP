@@ -7,6 +7,7 @@ import Skeleton from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
 import { useToast } from '../components/ui/Toast'
 import BookAppointmentModal from '../components/appointments/BookAppointmentModal'
+import { useRole } from '../lib/RoleContext'
 import { useFetch } from '../lib/useFetch'
 import { api } from '../lib/api'
 
@@ -15,6 +16,7 @@ const next = { scheduled: ['confirmed', 'cancelled'], confirmed: ['completed', '
 const iso = (d) => d.toISOString().slice(0, 10)
 
 export default function Appointments() {
+  const { role, doctorId } = useRole()
   const appts = useFetch('/appointments')
   const pts = useFetch('/patients')
   const docs = useFetch('/doctors')
@@ -24,7 +26,7 @@ export default function Appointments() {
   const [booking, setBooking] = useState(false)
 
   const all = appts.data ?? []
-  const day = all.filter((a) => a.date === date).sort((a, b) => a.time.localeCompare(b.time))
+  const day = all.filter((a) => a.date === date && (role !== 'Doctor' || a.doctorId === doctorId)).sort((a, b) => a.time.localeCompare(b.time))
   const byDoctor = (docs.data?.doctors ?? []).map((d) => ({ d, list: day.filter((a) => a.doctorId === d.id) })).filter((g) => g.list.length)
 
   const setStatus = async (a, status) => {

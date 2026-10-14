@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'
 import { validate } from '../middleware/validate.js'
+import { dayOffset } from '../data/seed.js'
 import { find } from '../services.js'
 
 const schema = z.object({
@@ -19,8 +20,8 @@ r.get('/', (req, res) => res.json(db.patients.map(withDoctor)))
 r.get('/:id', (req, res) => res.json(withDoctor(find('patients', req.params.id, 'Patient'))))
 r.post('/', validate(schema), (req, res) => {
   find('doctors', req.body.doctorId, 'Doctor')
-  const p = { id: Math.max(0, ...db.patients.map((x) => x.id)) + 1, ...req.body, status: 'outpatient', bedId: null,
-    vitals: { heartRate: 72, bp: '120/80', temp: 36.6, spo2: 98 }, history: [{ date: new Date().toISOString().slice(0, 10), event: 'Registered' }] }
+  const p = { id: Math.max(0, ...db.patients.map((x) => x.id)) + 1, ...req.body, status: 'outpatient', bedId: null, registeredOn: dayOffset(0),
+    vitals: { heartRate: 72, bp: '120/80', temp: 36.6, spo2: 98 }, history: [{ date: dayOffset(0), event: 'Registered' }] }
   db.patients.push(p)
   logActivity(`New patient registered: ${p.name}`, 'admit')
   res.status(201).json(withDoctor(p))

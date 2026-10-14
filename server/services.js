@@ -1,4 +1,5 @@
 import { db, logActivity } from './data/store.js'
+import { dayOffset } from './data/seed.js'
 import { HttpError } from './middleware/errorHandler.js'
 
 export const find = (list, id, label) => {
@@ -6,7 +7,7 @@ export const find = (list, id, label) => {
   if (!item) throw new HttpError(404, `${label} not found`)
   return item
 }
-const today = () => new Date().toISOString().slice(0, 10)
+const today = () => dayOffset(0)
 
 export function admitToBed(bed, patient) {
   if (bed.status !== 'free') throw new HttpError(409, `Bed ${bed.label} is ${bed.status}, not free`)
@@ -14,6 +15,9 @@ export function admitToBed(bed, patient) {
   bed.status = 'occupied'; bed.patientId = patient.id
   patient.status = 'admitted'; patient.bedId = bed.id
   patient.history.push({ date: today(), event: `Admitted to ${bed.label}` })
+  const entry = db.admissionLog.find((e) => e.date === today())
+  if (entry) entry.count++
+  else db.admissionLog.push({ date: today(), count: 1 })
   logActivity(`${patient.name} admitted to ${bed.ward} bed ${bed.label}`, 'admit')
 }
 

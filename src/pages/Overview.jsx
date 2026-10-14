@@ -8,6 +8,7 @@ import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
 import DoctorWidgets from '../components/overview/DoctorWidgets'
 import ReceptionWidgets from '../components/overview/ReceptionWidgets'
+import { Clock, UserCheck, ClipboardList } from 'lucide-react'
 import { useRole } from '../lib/RoleContext'
 
 const ago = (iso) => {
@@ -15,13 +16,13 @@ const ago = (iso) => {
   return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} hr ago`
 }
 
-const icons = { users: Users, bed: BedDouble, calendar: CalendarDays, activity: Activity }
+const icons = { users: Users, bed: BedDouble, calendar: CalendarDays, activity: Activity, clock: Clock, check: UserCheck, list: ClipboardList }
 const feedIcons = { admit: UserPlus, appt: CalendarDays, alert: Siren, discharge: LogOut, bed: Sparkles }
 const feedTones = { admit: 'bg-blue-50 text-info', appt: 'bg-brand-50 text-brand-600', alert: 'bg-red-50 text-danger', discharge: 'bg-green-50 text-ok', bed: 'bg-amber-50 text-warn' }
 
 export default function Overview() {
-  const { data, error, loading, refetch } = useFetch('/stats', { interval: 10000 })
-  const { role } = useRole()
+  const { role, doctorId } = useRole()
+  const { data, error, loading, refetch } = useFetch(role === 'Doctor' ? `/stats?doctorId=${doctorId}` : '/stats', { interval: 10000 })
 
   if (loading) {
     return (
@@ -43,19 +44,34 @@ export default function Overview() {
   }
 
   const { kpis: k, weeklyAdmissions, appointmentsByDept: deptAppointments, activity } = data
-  const kpis = [
-    { label: 'Total Patients', value: k.totalPatients, delta: `${k.admitted} admitted`, up: true, icon: 'users', tone: 'brand' },
-    { label: 'Admitted Now', value: k.admitted, delta: `${k.occupancyPct}% occupancy`, up: true, icon: 'bed', tone: 'info' },
-    { label: 'Appointments', value: k.appointments, delta: `${k.activeEmergencies} emergencies`, up: false, icon: 'calendar', tone: 'warn' },
-    { label: 'Beds Available', value: k.bedsAvailable, delta: 'live', up: true, icon: 'activity', tone: 'ok' },
-  ]
+  const d = data.doctor
+  const nextLabel = d?.nextAppointment ? `${d.nextAppointment.time}${d.nextAppointment.date === new Date().toISOString().slice(0, 10) ? '' : ` · ${d.nextAppointment.date.slice(5)}`}` : 'None'
+  const kpisByRole = {
+    Admin: [
+      { label: 'Total Patients', value: k.totalPatients, delta: `${k.admitted} admitted`, up: true, icon: 'users', tone: 'brand' },
+      { label: 'Admitted Now', value: k.admitted, delta: `${k.occupancyPct}% occupancy`, up: true, icon: 'bed', tone: 'info' },
+      { label: 'Appointments', value: k.appointments, delta: `${k.activeEmergencies} emergencies`, up: false, icon: 'calendar', tone: 'warn' },
+      { label: 'Beds Available', value: k.bedsAvailable, delta: 'live', up: true, icon: 'activity', tone: 'ok' },
+    ],
+    Doctor: d ? [
+      { label: 'My appointments today', value: d.appointmentsToday, icon: 'calendar', tone: 'brand' },
+      { label: 'My admitted patients', value: d.admittedPatients, icon: 'bed', tone: 'info' },
+      { label: d.nextAppointment ? `Next: ${d.nextAppointment.patient}` : 'Next appointment', value: nextLabel, icon: 'clock', tone: 'warn' },
+    ] : [],
+    Receptionist: [
+      { label: "Today's registrations", value: k.registrationsToday, icon: 'check', tone: 'brand' },
+      { label: 'Free beds', value: k.bedsAvailable, icon: 'bed', tone: 'ok' },
+      { label: 'Pending bookings', value: k.pendingBookings, icon: 'list', tone: 'warn' },
+    ],
+  }
+  const kpis = kpisByRole[role]
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold">{role === 'Doctor' ? 'Welcome, Dr. Rao 👋' : role === 'Receptionist' ? 'Front desk 👋' : 'Good morning 👋'}</h1>
+        <h1 className="text-2xl font-extrabold">{role === 'Doctor' ? `Welcome, ${d?.doctor.name ?? 'Doctor'} 👋` : role === 'Receptionist' ? 'Front desk 👋' : 'Good morning 👋'}</h1>
         <p className="text-sm text-muted">{role === 'Admin' ? "Here's what's happening at the hospital today." : role === 'Doctor' ? 'Your schedule and patients at a glance.' : 'Register patients and book appointments.'}</p>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className={`grid gap-4 sm:grid-cols-2 ${role === 'Admin' ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
         {kpis.map((k) => <StatCard key={k.label} {...k} icon={icons[k.icon]} />)}
       </div>
       {role === 'Doctor' && <DoctorWidgets />}
