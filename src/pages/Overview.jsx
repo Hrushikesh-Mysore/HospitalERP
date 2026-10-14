@@ -5,6 +5,10 @@ import StatCard from '../components/ui/StatCard'
 import Skeleton from '../components/ui/Skeleton'
 import { useFetch } from '../lib/useFetch'
 import Button from '../components/ui/Button'
+import EmptyState from '../components/ui/EmptyState'
+import DoctorWidgets from '../components/overview/DoctorWidgets'
+import ReceptionWidgets from '../components/overview/ReceptionWidgets'
+import { useRole } from '../lib/RoleContext'
 
 const ago = (iso) => {
   const m = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000))
@@ -17,6 +21,7 @@ const feedTones = { admit: 'bg-blue-50 text-info', appt: 'bg-brand-50 text-brand
 
 export default function Overview() {
   const { data, error, loading, refetch } = useFetch('/stats', { interval: 10000 })
+  const { role } = useRole()
 
   if (loading) {
     return (
@@ -47,13 +52,15 @@ export default function Overview() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold">Good morning 👋</h1>
-        <p className="text-sm text-muted">Here's what's happening at the hospital today.</p>
+        <h1 className="text-2xl font-extrabold">{role === 'Doctor' ? 'Welcome, Dr. Rao 👋' : role === 'Receptionist' ? 'Front desk 👋' : 'Good morning 👋'}</h1>
+        <p className="text-sm text-muted">{role === 'Admin' ? "Here's what's happening at the hospital today." : role === 'Doctor' ? 'Your schedule and patients at a glance.' : 'Register patients and book appointments.'}</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((k) => <StatCard key={k.label} {...k} icon={icons[k.icon]} />)}
       </div>
-      <div className="grid gap-6 xl:grid-cols-2">
+      {role === 'Doctor' && <DoctorWidgets />}
+      {role === 'Receptionist' && <ReceptionWidgets />}
+      {role === 'Admin' && <div className="grid gap-6 xl:grid-cols-2">
         <Card title="Weekly admissions">
           <div className="h-64">
             <ResponsiveContainer>
@@ -80,8 +87,9 @@ export default function Overview() {
             </ResponsiveContainer>
           </div>
         </Card>
-      </div>
+      </div>}
       <Card title="Recent activity">
+        {activity.length === 0 && <EmptyState title="No activity yet" text="Admit a patient or book an appointment to see it here." />}
         <ul className="divide-y divide-line">
           {activity.map((a) => {
             const Icon = feedIcons[a.type]

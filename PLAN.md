@@ -24,10 +24,10 @@
 - [x] Emergency: triage queue, wait timers, 5s polling, critical pulse, add case form, assign bed -> Beds
 
 ## Phase 5 — Roles + Usage
-- [ ] Role switcher changes sidebar + Overview widgets
-- [ ] Quick Tour (5 steps) + "?" How-to panel
-- [ ] Empty states with CTA
-- [ ] Ctrl+K quick search (cut first if short)
+- [x] Role switcher changes sidebar + Overview widgets
+- [x] Quick Tour (5 steps) + "?" How-to panel
+- [x] Empty states with CTA
+- [x] Ctrl+K quick search (cut first if short)
 
 ## Phase 6 — Polish + Demo
 - [ ] Responsive pass 375/768/1280

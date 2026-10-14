@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Plus, Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
@@ -19,7 +20,8 @@ export default function Patients() {
   const pts = useFetch('/patients')
   const beds = useFetch('/beds')
   const docs = useFetch('/doctors')
-  const [q, setQ] = useState('')
+  const [params] = useSearchParams()
+  const [q, setQ] = useState(params.get('q') ?? '')
   const [status, setStatus] = useState('')
   const [ward, setWard] = useState('')
   const [sort, setSort] = useState({ key: 'name', dir: 1 })
