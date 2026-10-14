@@ -83,7 +83,7 @@ export default function Patients() {
             <input className={`${inputCls} pl-9`} placeholder="Search name or condition…" value={q} onChange={reset(setQ)} />
           </div>
           <select className={`${inputCls} !w-auto`} value={status} onChange={reset(setStatus)}>
-            <option value="">All statuses</option><option value="admitted">Admitted</option><option value="outpatient">Outpatient</option><option value="discharged">Discharged</option>
+            <option value="">All statuses</option><option value="admitted">Admitted</option><option value="outpatient">Outpatient</option><option value="under-observation">Under observation</option><option value="discharged">Discharged</option><option value="referred">Referred</option>
           </select>
           <select className={`${inputCls} !w-auto`} value={ward} onChange={reset(setWard)}>
             <option value="">All wards</option><option>General</option><option>ICU</option><option>Pediatrics</option>
@@ -146,7 +146,7 @@ export default function Patients() {
         </div>
       </Card>
       <SlideOver open={!!selected} onClose={() => setSelected(null)} title="Patient details">
-        {selected && <PatientDetails patient={selected} onEdit={canEdit ? () => setEditing(selected) : undefined} onDelete={canDelete ? () => setDeleting(selected) : undefined} onPrescribe={role === 'Doctor' ? () => setPrescribing(selected) : undefined} />}
+        {selected && <PatientDetails patient={pts.data?.find((x) => x.id === selected.id) ?? selected} canEditStatus={role === 'Admin' || (role === 'Doctor' && selected.doctorId === doctorId)} onChanged={() => { pts.refetch(); beds.refetch() }} onEdit={canEdit ? () => setEditing(selected) : undefined} onDelete={canDelete ? () => setDeleting(selected) : undefined} onPrescribe={role === 'Doctor' ? () => setPrescribing(selected) : undefined} />}
       </SlideOver>
       <AddPatientModal open={adding} onClose={() => setAdding(false)} doctors={docs.data?.doctors ?? []} onCreated={pts.refetch} />
       <AddPatientModal key={editing?.id ?? 'none'} patient={editing} open={!!editing} onClose={() => setEditing(null)} doctors={docs.data?.doctors ?? []}

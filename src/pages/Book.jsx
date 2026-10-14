@@ -12,11 +12,10 @@ import { useLiveSync } from '../lib/useLiveSync'
 import { useRole } from '../lib/roleStore'
 import { useToast } from '../lib/toastStore'
 import { daysFromNow } from '../lib/dates'
-import { isInactive } from '../lib/status'
+import { isInactive, apptTone } from '../lib/status'
 import { api } from '../lib/api'
 
 const iso = (d) => d.toISOString().slice(0, 10)
-const tone = { scheduled: 'amber', confirmed: 'blue', completed: 'green', cancelled: 'red', 'no-show': 'gray' }
 
 // Patient role: book a visit, see upcoming ones, check in on the day.
 export default function Book() {
@@ -109,7 +108,7 @@ export default function Book() {
               <li key={a.id} className="rounded-xl bg-surface p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-bold">{a.date === iso(days[0]) ? 'Today' : a.date} · {a.time}</p>
-                  <Badge tone={tone[a.status]}>{a.status}</Badge>
+                  <Badge tone={apptTone[a.status]}>{a.status}</Badge>
                 </div>
                 <p className="text-xs text-muted">{a.doctor?.name} · {a.reason}</p>
                 <div className="mt-2 flex gap-2">

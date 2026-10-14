@@ -12,7 +12,10 @@ export const isInactive = (status) => status === 'cancelled' || status === 'no-s
 
 export const statCardTone = { brand: 'brand', info: 'blue', warn: 'amber', ok: 'green' }
 
-export const statusTone = { admitted: 'blue', outpatient: 'green', discharged: 'gray' }
+export const statusTone = { admitted: 'blue', outpatient: 'green', discharged: 'gray', 'under-observation': 'amber', referred: 'brand' }
+export const apptTone = { scheduled: 'amber', confirmed: 'blue', 'checked-in': 'blue', 'in-consult': 'brand', completed: 'green', cancelled: 'red', 'no-show': 'gray' }
+export const statusLabel = (s) => (s === 'no-show' ? 'No-show' : `${s[0].toUpperCase()}${s.slice(1).replace('-', ' ')}`)
+export const destructiveStatuses = ['cancelled', 'no-show']
 
 export const bedStatus = {
   free: { tile: 'border-ok-line bg-ok-soft text-ok hover:bg-ok-hover', dot: 'bg-ok', label: 'Free' },

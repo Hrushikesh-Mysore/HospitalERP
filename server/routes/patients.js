@@ -3,7 +3,8 @@ import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'
 import { validate } from '../middleware/validate.js'
 import { dayOffset } from '../data/seed.js'
-import { find, deletionImpact, softDeletePatient, restorePatient } from '../services.js'
+import { find, deletionImpact, softDeletePatient, restorePatient, changePatientStatus, PATIENT_STATUSES, NOTE_MAX } from '../services.js'
+import { requireRole, requireOwnership, byOf } from '../actor.js'
 
 const schema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -38,6 +39,14 @@ r.patch('/:id', validate(update), (req, res) => {
   if (req.body.doctorId !== undefined) find('doctors', req.body.doctorId, 'Doctor')
   Object.assign(p, req.body)
   logActivity(`Patient record updated: ${p.name}`, 'admit')
+  res.json(withDoctor(p))
+})
+// Doctor (own patients) and Admin only. 'admitted' / 'discharged' are refused here and belong to the bed flow.
+const statusBody = z.object({ status: z.enum(PATIENT_STATUSES), note: z.string().trim().max(NOTE_MAX).optional() })
+r.patch('/:id/status', requireRole('Doctor', 'Admin'), validate(statusBody), (req, res) => {
+  const p = find('patients', req.params.id, 'Patient')
+  requireOwnership(req, p.doctorId, 'patients')
+  changePatientStatus(p, req.body.status, { by: byOf(req), note: req.body.note })
   res.json(withDoctor(p))
 })
 r.delete('/:id', (req, res) => res.json(softDeletePatient(find('patients', req.params.id, 'Patient'))))

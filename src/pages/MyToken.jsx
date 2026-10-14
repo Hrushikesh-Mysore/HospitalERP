@@ -8,11 +8,13 @@ import EmptyState from '../components/ui/EmptyState'
 import Skeleton from '../components/ui/Skeleton'
 import { inputCls } from '../components/ui/Field'
 import TokenCard from '../components/queue/TokenCard'
+import StatusTimeline from '../components/ui/StatusTimeline'
+import { buildTimeline } from '../lib/statusTimeline'
 import { useFetch } from '../lib/useFetch'
 import { useLiveSync } from '../lib/useLiveSync'
 import { useRole } from '../lib/roleStore'
 import { useToast } from '../lib/toastStore'
-import { isInactive } from '../lib/status'
+import { isInactive, statusTone, apptTone, statusLabel } from '../lib/status'
 import { tokenTone, tokenLabel } from '../lib/tokens'
 import { api } from '../lib/api'
 
@@ -24,7 +26,8 @@ export default function MyToken() {
   const toast = useToast()
   const q = useFetch(`/tokens?patientId=${patientId}`)
   const appts = useFetch('/appointments')
-  useLiveSync({ tokens: q.refetch, appointments: appts.refetch })
+  const me = useFetch(`/patients/${patientId}`)
+  useLiveSync({ tokens: q.refetch, appointments: appts.refetch, patients: me.refetch })
   const [doctorId, setDoctorId] = useState('')
 
   const issue = async (body) => {
@@ -64,6 +67,18 @@ export default function MyToken() {
             </select>
             <Button className="w-full" disabled={!doctorId} onClick={() => issue({ doctorId: Number(doctorId), patientId })}>Get a token</Button>
           </div>
+        </Card>
+      )}
+      {me.data && (
+        <Card title="My status">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <Badge tone={statusTone[me.data.status]}>{statusLabel(me.data.status)}</Badge>
+            {(appts.data ?? []).filter((a) => a.patientId === patientId && a.date === today() && a.status !== 'cancelled').map((a) => (
+              <span key={a.id} className="flex items-center gap-1 text-xs text-muted">Visit {a.time}: <Badge tone={apptTone[a.status]}>{statusLabel(a.status)}</Badge></span>
+            ))}
+          </div>
+          <StatusTimeline entries={buildTimeline(me.data, appts.data ?? [])} limit={4} />
+          <p className="mt-3 text-xs text-muted">Only your care team can change these.</p>
         </Card>
       )}
       {past.length > 0 && (
