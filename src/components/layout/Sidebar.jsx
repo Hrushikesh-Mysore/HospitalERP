@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, HeartPulse, X } from 'lucide-react'
+import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, HeartPulse, X, RotateCcw } from 'lucide-react'
+import { useToast } from '../ui/Toast'
+import { api } from '../../lib/api'
 import { useRole } from '../../lib/RoleContext'
 import { access } from '../../lib/roles'
 
@@ -11,8 +13,13 @@ const items = [
   { to: '/emergency', label: 'Emergency', icon: Siren },
 ]
 
-export default function Sidebar({ open, onClose }) {
+export default function Sidebar({ open, onClose, onReset }) {
   const { role } = useRole()
+  const toast = useToast()
+  const reset = async () => {
+    try { await api('/demo/reset', { method: 'POST' }); toast('Demo data reset'); onReset(); onClose() }
+    catch (e) { toast(e.message, 'error') }
+  }
   const visible = items.filter((i) => access[role].includes(i.to))
   const label = (i) => (role === 'Doctor' && i.to === '/patients' ? 'My Patients' : role === 'Doctor' && i.to === '/appointments' ? 'My Appointments' : role === 'Receptionist' && i.to === '/patients' ? 'Registration' : role === 'Receptionist' && i.to === '/appointments' ? 'Booking' : i.label)
   return (
@@ -34,7 +41,10 @@ export default function Sidebar({ open, onClose }) {
             </NavLink>
           ))}
         </nav>
-        <p className="mt-auto rounded-xl bg-surface p-3 text-xs text-muted">Viewing as <b className="text-ink">{role}</b>{role === 'Doctor' && ' · Dr. Anil Rao'}</p>
+        <button onClick={reset} className="mt-auto flex items-center gap-2 rounded-xl border border-dashed border-line px-3 py-2.5 text-sm font-semibold text-muted transition-colors hover:border-brand-500 hover:text-brand-700">
+          <RotateCcw size={16} /> Reset demo data
+        </button>
+        <p className="mt-3 rounded-xl bg-surface p-3 text-xs text-muted">Viewing as <b className="text-ink">{role}</b>{role === 'Doctor' && ' · Dr. Anil Rao'}</p>
       </aside>
     </>
   )

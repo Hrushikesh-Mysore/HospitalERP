@@ -30,9 +30,9 @@
 - [x] Ctrl+K quick search (cut first if short)
 
 ## Phase 6 — Polish + Demo
-- [ ] Responsive pass 375/768/1280
-- [ ] Spacing, skeletons, error states, transitions
-- [ ] Title + favicon
-- [ ] Reset demo data button
-- [ ] README (pitch, features, run steps, 3-min demo script)
-- [ ] npm run build clean
+- [x] Responsive pass 375/768/1280
+- [x] Spacing, skeletons, error states, transitions
+- [x] Title + favicon
+- [x] Reset demo data button
+- [x] README (pitch, features, run steps, 3-min demo script)
+- [x] npm run build clean
