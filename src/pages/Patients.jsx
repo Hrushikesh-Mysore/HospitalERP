@@ -14,6 +14,7 @@ import PatientDetails from '../components/patients/PatientDetails'
 import { statusTone } from '../lib/status'
 import { useRole } from '../lib/roleStore'
 import { useFetch } from '../lib/useFetch'
+import { useLiveSync } from '../lib/useLiveSync'
 
 const PAGE = 10
 const wardOf = (p, beds) => beds.find((b) => b.id === p.bedId)?.ward ?? ''
@@ -23,6 +24,7 @@ export default function Patients() {
   const pts = useFetch('/patients')
   const beds = useFetch('/beds')
   const docs = useFetch('/doctors')
+  useLiveSync({ patients: pts.refetch, beds: beds.refetch })
   const [params] = useSearchParams()
   const [q, setQ] = useState(params.get('q') ?? '')
   const [status, setStatus] = useState('')

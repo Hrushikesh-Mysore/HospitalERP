@@ -1,4 +1,5 @@
 import ThemeToggle from './ThemeToggle'
+import LiveDot from './LiveDot'
 import { Menu, Search, Bell, HelpCircle } from 'lucide-react'
 import { useFetch } from '../../lib/useFetch'
 import { useRole } from '../../lib/roleStore'
@@ -15,6 +16,7 @@ export default function TopBar({ onMenu, onSearch, onHelp }) {
         <kbd className="hidden rounded-md border border-line bg-card px-1.5 text-xs sm:block">Ctrl K</kbd>
       </button>
       <div className="ml-auto flex items-center gap-2">
+        <LiveDot />
         <button onClick={onHelp} className="rounded-xl p-2 text-muted hover:bg-surface" aria-label="How to use"><HelpCircle size={19} /></button>
         <ThemeToggle />
         <button className="relative hidden rounded-xl p-2 sm:block text-muted hover:bg-surface" aria-label="Notifications">

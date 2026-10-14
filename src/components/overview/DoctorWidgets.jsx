@@ -6,6 +6,7 @@ import EmptyState from '../ui/EmptyState'
 import Button from '../ui/Button'
 import Skeleton from '../ui/Skeleton'
 import { useFetch } from '../../lib/useFetch'
+import { useLiveSync } from '../../lib/useLiveSync'
 import { useRole } from '../../lib/roleStore'
 import { statusTone } from '../../lib/status'
 
@@ -13,6 +14,7 @@ export default function DoctorWidgets() {
   const { doctorId } = useRole()
   const appts = useFetch('/appointments')
   const pts = useFetch('/patients')
+  useLiveSync({ appointments: appts.refetch, patients: pts.refetch })
   if (appts.loading || pts.loading) return <div className="grid gap-6 xl:grid-cols-2"><Skeleton className="h-72" /><Skeleton className="h-72" /></div>
   const mine = (appts.data ?? []).filter((a) => a.doctorId === doctorId && a.status !== 'cancelled').sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   const myPatients = (pts.data ?? []).filter((p) => p.doctorId === doctorId)
