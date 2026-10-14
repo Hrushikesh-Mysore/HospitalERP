@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, HeartPulse, X, RotateCcw } from 'lucide-react'
+import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, Ticket, HeartPulse, X, RotateCcw } from 'lucide-react'
 import { useToast } from '../../lib/toastStore'
 import { api } from '../../lib/api'
 import { useRole } from '../../lib/roleStore'
@@ -10,6 +10,7 @@ const items = [
   { to: '/patients', label: 'Patients', icon: Users },
   { to: '/appointments', label: 'Appointments', icon: CalendarDays },
   { to: '/beds', label: 'Beds', icon: BedDouble },
+  { to: '/queue', label: 'Queue', icon: Ticket },
   { to: '/emergency', label: 'Emergency', icon: Siren },
 ]
 
@@ -21,7 +22,7 @@ export default function Sidebar({ open, onClose, onReset }) {
     catch (e) { toast(e.message, 'error') }
   }
   const visible = items.filter((i) => access[role].includes(i.to))
-  const label = (i) => (role === 'Doctor' && i.to === '/patients' ? 'My Patients' : role === 'Doctor' && i.to === '/appointments' ? 'My Appointments' : role === 'Receptionist' && i.to === '/patients' ? 'Registration' : role === 'Receptionist' && i.to === '/appointments' ? 'Booking' : i.label)
+  const label = (i) => (role === 'Doctor' && i.to === '/queue' ? 'My Queue' : role === 'Doctor' && i.to === '/patients' ? 'My Patients' : role === 'Doctor' && i.to === '/appointments' ? 'My Appointments' : role === 'Receptionist' && i.to === '/patients' ? 'Registration' : role === 'Receptionist' && i.to === '/appointments' ? 'Booking' : i.label)
   return (
     <>
       {open && <div className="fixed inset-0 z-30 bg-overlay lg:hidden" onClick={onClose} />}

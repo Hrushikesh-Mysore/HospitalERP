@@ -90,6 +90,7 @@ export function buildData() {
 
   return {
     patients, doctors, beds, appointments, emergency, admissionLog,
+    tokens: [], // first-come-first-served queue tokens; start empty so reset clears them
     activity: [
       { id: 1, text: `${patients[4].name} admitted to General bed G-05`, type: 'admit', at: new Date(now - 2 * 60000).toISOString() },
       { id: 2, text: 'Dr. Anil Rao confirmed an appointment', type: 'appt', at: new Date(now - 14 * 60000).toISOString() },

@@ -4,8 +4,8 @@ import helmet from 'helmet'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
-import os from 'node:os'
 import qrcode from 'qrcode-terminal'
+import { lanAddress } from './network.js'
 import { eventsHandler, broadcastWrites } from './events.js'
 import { resetDb } from './data/store.js'
 import stats from './routes/stats.js'
@@ -14,6 +14,7 @@ import doctors from './routes/doctors.js'
 import appointments from './routes/appointments.js'
 import beds from './routes/beds.js'
 import emergency from './routes/emergency.js'
+import tokens from './routes/tokens.js'
 
 const app = express()
 app.use(helmet())
@@ -29,6 +30,7 @@ app.use('/api/doctors', doctors)
 app.use('/api/appointments', appointments)
 app.use('/api/beds', beds)
 app.use('/api/emergency', emergency)
+app.use('/api/tokens', tokens)
 app.post('/api/demo/reset', (req, res) => { resetDb(); res.json({ ok: true }) })
 
 app.use(notFound)
@@ -36,11 +38,6 @@ app.use(errorHandler)
 
 const port = process.env.PORT || 3001
 const clientPort = process.env.CLIENT_PORT || 5173
-
-function lanAddress() {
-  const addrs = Object.values(os.networkInterfaces()).flat().filter((i) => i.family === 'IPv4' && !i.internal)
-  return (addrs.find((i) => /^(192\.168|10\.|172\.(1[6-9]|2\d|3[01]))/.test(i.address)) ?? addrs[0])?.address
-}
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`API on http://localhost:${port}`)

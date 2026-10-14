@@ -1,4 +1,4 @@
-import { lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import ThemeProvider from './lib/ThemeProvider'
@@ -10,6 +10,9 @@ const Patients = lazy(() => import('./pages/Patients'))
 const Appointments = lazy(() => import('./pages/Appointments'))
 const Beds = lazy(() => import('./pages/Beds'))
 const Emergency = lazy(() => import('./pages/Emergency'))
+const Queue = lazy(() => import('./pages/Queue'))
+const Display = lazy(() => import('./pages/Display'))
+const TokenStatus = lazy(() => import('./pages/TokenStatus'))
 
 export default function App() {
   return (
@@ -24,7 +27,10 @@ export default function App() {
               <Route path="appointments" element={<Appointments />} />
               <Route path="beds" element={<Beds />} />
               <Route path="emergency" element={<Emergency />} />
+              <Route path="queue" element={<Queue />} />
             </Route>
+            <Route path="display" element={<Suspense fallback={null}><Display /></Suspense>} />
+            <Route path="token/:ref?" element={<Suspense fallback={null}><TokenStatus /></Suspense>} />
           </Routes>
         </BrowserRouter>
       </ToastProvider>

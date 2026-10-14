@@ -10,6 +10,8 @@ MediCore is a role-aware hospital dashboard that keeps patients, appointments, b
 - Beds: ward tabs, status-coloured grid, admit / discharge / cleaning, live occupancy bars
 - Emergency: triage queue (priority, then arrival), live wait timers, pulsing critical cases, assign-to-bed flow
 - Live sync: changes made on one device appear on every other open device within a moment (Server-Sent Events, 5s polling fallback); a green "Live" dot in the top bar shows the connection
+- Queue tokens (first come, first served): reception issues per-doctor tokens (D2-014) for walk-ins or booked appointments; doctors use Call next / Start / Finish / Skip / Recall; positions and estimated waits (avg consult minutes x people ahead) update live. Emergency triage stays a separate, higher-priority queue
+- Waiting-room board at `/display` (token codes only, no names) and a patient phone view at `/token/D2-014`
 - Roles: Admin, Doctor and Receptionist change the sidebar and Overview
 - Onboarding: Quick Tour, "?" how-to panel, Ctrl+K search, helpful empty states
 - Security basics: helmet, restricted CORS, rate limiting, 10kb body limit, zod validation, no stack traces in errors
@@ -37,6 +39,15 @@ Both devices must be on the same network. A phone hotspot works well and needs n
 - **Port 5173 already in use**: Vite silently moves to 5174, so the printed URL and QR are wrong. Stop the other dev server, or set `CLIENT_PORT` in `.env` to the port Vite reports.
 - **Grey dot / "Offline"**: the live stream is not connected. The app keeps working by polling every 5s. Check that the API is running (`npm run dev:lan` starts both) and that no proxy or VPN is buffering `/api/events`.
 - **Data differs between devices**: both must talk to the same laptop. Data lives in server memory, so restarting the server or pressing "Reset demo data" resets everyone.
+
+## Queue tokens
+- **Reception** (Admin / Receptionist) > Queue > *Issue token*: check in a booked appointment or add a walk-in. The result shows the token, position and a phone link (uses the laptop's LAN address, so it opens on a phone on the same network).
+- **Doctor** > My Queue: *Call next* calls the earliest-issued waiting token. One patient at a time: finish or skip before calling again. A skipped token can be recalled and returns to its original place in line.
+- **TV**: open `/display` on the waiting-room screen (button F11 / the expand icon for full screen).
+- **Phone**: `/token/D2-014` shows the token, people ahead, estimated wait and "You're next". `/token` asks for the code.
+- Estimated wait uses 10 min per consult until 3 consults are finished that day, then the doctor's measured average.
+- Counters restart each day; "Reset demo data" clears all tokens.
+- Tests: `npm test` starts the API on a spare port and checks ordering, numbering, recall and guards.
 
 ## 3-minute demo script
 1. **0:00 Overview** — point out live KPIs and charts. Close the Quick Tour, open "?" to show per-role how-tos.
