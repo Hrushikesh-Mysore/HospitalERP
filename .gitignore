@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+coverage
 *.local
 
 # Editor directories and files
@@ -24,6 +25,17 @@ dist-ssr
 *.sw?
 
 .env
+.env.*
+!.env.example
+!.env.*.example
+
+# Private keys
+*.key
+*.pem
 
 # Uploaded patient documents (demo data)
 server/uploads/
+
+# Unrelated local preparation files
+/prep/
+/web-app.txt
