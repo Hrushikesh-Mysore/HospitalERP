@@ -16,8 +16,8 @@
 - [x] Scripts: server, dev:all
 
 ## Phase 3 — Patients + Appointments
-- [ ] Patients table (search/filter/sort/paginate), SlideOver details, Add patient modal
-- [ ] Appointments: date strip, timeline by doctor, status change, Book modal with inline 409 error
+- [x] Patients table (search/filter/sort/paginate), SlideOver details, Add patient modal
+- [x] Appointments: date strip, timeline by doctor, status change, Book modal with inline 409 error
 
 ## Phase 4 — Beds + Emergency
 - [ ] Beds: ward tabs, tile grid, legend, popover actions, live occupancy bars
