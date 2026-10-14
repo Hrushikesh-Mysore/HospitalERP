@@ -8,7 +8,7 @@ const steps = [
   { icon: Users, title: 'Patients', text: 'Search, filter and sort patients. Click a row for vitals and history, or add a new patient.' },
   { icon: CalendarDays, title: 'Appointments', text: 'Pick a date, then book a doctor and time slot. Double-bookings are rejected with a clear message.' },
   { icon: BedDouble, title: 'Beds & Emergency', text: 'Admit and discharge from the bed grid. Emergency cases queue by triage priority; assign them straight to a bed.' },
-  { icon: UserCog, title: 'Roles & help', text: 'Switch role (top right) to see Admin, Doctor or Receptionist views. Press ? any time for a how-to, and Ctrl+K to search.' },
+  { icon: UserCog, title: 'Roles & help', text: 'Switch role (top right) to see Admin, Doctor, Receptionist or Patient views (on a phone: More > Viewing as). Press ? any time for a how-to, and Ctrl+K to search.' },
 ]
 
 export default function QuickTour({ open, onClose }) {

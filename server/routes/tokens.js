@@ -59,7 +59,9 @@ r.get('/', (req, res) => {
       doneCount: list.filter((t) => t.status === 'done').length,
     }
   })
-  res.json({ date: today(), lanOrigin: lanOrigin(), doctors })
+  const patientId = req.query.patientId ? Number(req.query.patientId) : undefined
+  const mine = patientId ? todays().filter((t) => t.patientId === patientId).sort(byIssue).reverse().map(view) : undefined
+  res.json({ date: today(), lanOrigin: lanOrigin(), doctors, ...(mine && { mine }) })
 })
 
 // :ref is a numeric id or a token code such as D2-014 (today's)
