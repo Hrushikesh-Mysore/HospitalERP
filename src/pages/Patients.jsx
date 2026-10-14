@@ -1,3 +1,4 @@
+// Patients page: searchable table/cards, detail panel, add, edit and delete with undo.
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Plus, Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users } from 'lucide-react'

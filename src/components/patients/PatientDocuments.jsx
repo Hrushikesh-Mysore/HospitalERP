@@ -1,3 +1,4 @@
+// Document list with camera/file upload, categories, thumbnails and delete.
 import { useRef, useState } from 'react'
 import { Camera, FileText, Paperclip, ImageOff } from 'lucide-react'
 import Button from '../ui/Button'

@@ -1,3 +1,4 @@
+// Ctrl+K search over patients and doctors.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, User, Stethoscope } from 'lucide-react'

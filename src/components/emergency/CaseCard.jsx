@@ -1,3 +1,4 @@
+// One emergency case with priority, wait timer and Assign bed.
 import { Clock, BedDouble } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Button from '../ui/Button'

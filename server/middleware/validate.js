@@ -1,3 +1,4 @@
+// Runs a zod schema on req.body and answers 400 with the issues.
 export const validate = (schema) => (req, res, next) => {
   const result = schema.safeParse(req.body)
   if (!result.success) {

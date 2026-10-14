@@ -1,3 +1,4 @@
+// Side panel that becomes a bottom sheet on phones.
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { useIsPhone } from '../../lib/useMediaQuery'

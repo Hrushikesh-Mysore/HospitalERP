@@ -1,3 +1,4 @@
+// Doctor queue panel: current patient, call next, start, finish, skip, recall.
 import { useEffect, useState } from 'react'
 import { BellRing, Play, CheckCheck, SkipForward, Megaphone, RotateCcw, Ticket } from 'lucide-react'
 import Card from '../ui/Card'

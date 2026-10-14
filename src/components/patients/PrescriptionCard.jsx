@@ -1,3 +1,4 @@
+// Displays one prescription.
 import { Pill } from 'lucide-react'
 
 export default function PrescriptionCard({ rx }) {

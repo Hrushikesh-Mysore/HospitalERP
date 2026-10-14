@@ -1,3 +1,4 @@
+// Patient page: live token with position and wait, check-in/walk-in, and my status timeline.
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Ticket } from 'lucide-react'
@@ -18,8 +19,8 @@ import { useToast } from '../lib/toastStore'
 import { isInactive, statusTone, apptTone, statusLabel } from '../lib/status'
 import { tokenTone, tokenLabel } from '../lib/tokens'
 import { api } from '../lib/api'
+import { todayISO } from '../lib/dates'
 
-const today = () => new Date().toISOString().slice(0, 10)
 
 // Patient role: my live token, or a way to get one (check in a booked visit, or walk in).
 export default function MyToken() {
@@ -42,7 +43,7 @@ export default function MyToken() {
   const active = mine.filter((t) => ['waiting', 'called', 'in-consult'].includes(t.status))
   const past = mine.filter((t) => !active.includes(t))
   const doctors = q.data?.doctors ?? []
-  const checkable = (appts.data ?? []).filter((a) => a.patientId === patientId && a.date === today() && !isInactive(a.status) && a.status !== 'completed' && !active.some((t) => t.appointmentId === a.id))
+  const checkable = (appts.data ?? []).filter((a) => a.patientId === patientId && a.date === todayISO() && !isInactive(a.status) && a.status !== 'completed' && !active.some((t) => t.appointmentId === a.id))
 
   return (
     <div className="space-y-6">
@@ -75,7 +76,7 @@ export default function MyToken() {
         <Card title="My status">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <Badge tone={statusTone[me.data.status]}>{statusLabel(me.data.status)}</Badge>
-            {(appts.data ?? []).filter((a) => a.patientId === patientId && a.date === today() && a.status !== 'cancelled').map((a) => (
+            {(appts.data ?? []).filter((a) => a.patientId === patientId && a.date === todayISO() && a.status !== 'cancelled').map((a) => (
               <span key={a.id} className="flex items-center gap-1 text-xs text-muted">Visit {a.time}: <Badge tone={apptTone[a.status]}>{statusLabel(a.status)}</Badge></span>
             ))}
           </div>

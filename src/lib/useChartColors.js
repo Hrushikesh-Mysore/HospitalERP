@@ -1,3 +1,4 @@
+// Returns chart colors that follow the current theme.
 import { useTheme } from './themeStore'
 
 const read = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()

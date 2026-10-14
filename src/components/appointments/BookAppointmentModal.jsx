@@ -1,3 +1,4 @@
+// Staff booking form with live slot availability and inline 409 errors.
 import { useState } from 'react'
 import { isInactive } from '../../lib/status'
 import { AlertCircle } from 'lucide-react'

@@ -1,3 +1,4 @@
+// Emergency triage API: priority-ordered queue, add case, assign bed.
 import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'

@@ -1,3 +1,4 @@
+// Form for adding an emergency case with a triage priority.
 import { useState } from 'react'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'

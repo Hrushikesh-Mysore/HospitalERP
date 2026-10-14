@@ -1,3 +1,4 @@
+// Patient detail panel: vitals, history, status menu with bed flows, timeline, prescriptions, documents.
 import { Heart, Activity, Thermometer, Droplets, Pencil, Trash2, Pill } from 'lucide-react'
 import Button from '../ui/Button'
 import PrescriptionCard from './PrescriptionCard'

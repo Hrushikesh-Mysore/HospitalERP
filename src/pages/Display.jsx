@@ -1,3 +1,4 @@
+// Public waiting-room board: now serving and next tokens per doctor (no sign-in).
 import { useEffect, useState } from 'react'
 import { Maximize2, HeartPulse, Siren } from 'lucide-react'
 import LiveDot from '../components/layout/LiveDot'

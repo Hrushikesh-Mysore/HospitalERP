@@ -1,3 +1,4 @@
+// Refetches the given resources when the live stream says they changed (polls every 5s if it is down).
 import { useEffect, useRef } from 'react'
 import { affects, subscribe, useLiveStatus } from './liveStore'
 

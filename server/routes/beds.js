@@ -1,3 +1,4 @@
+// Beds API: list, admit, discharge and mark cleaning. The only way admitted/discharged patient status changes.
 import { Router } from 'express'
 import { z } from 'zod'
 import { db } from '../data/store.js'

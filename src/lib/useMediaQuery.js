@@ -1,3 +1,4 @@
+// Reports whether a media query matches (e.g. phone width).
 import { useSyncExternalStore } from 'react'
 
 export function useMediaQuery(query) {

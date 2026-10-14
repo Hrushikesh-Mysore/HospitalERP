@@ -1,3 +1,4 @@
+// First-come-first-served queue tokens: view, issue, call next, start, finish, skip and recall.
 import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'
@@ -13,10 +14,9 @@ import { HttpError } from '../middleware/errorHandler.js'
 const DEFAULT_AVG_MIN = 10
 const MIN_SAMPLES = 3 // consults needed before the measured average replaces the default
 const ACTIVE = ['waiting', 'called', 'in-consult']
-const today = () => dayOffset(0)
 const pad = (n) => String(n).padStart(3, '0')
 const byIssue = (a, b) => a.issuedAt.localeCompare(b.issuedAt) || a.seq - b.seq
-const todays = (doctorId) => db.tokens.filter((t) => t.date === today() && (doctorId === undefined || t.doctorId === doctorId))
+const todays = (doctorId) => db.tokens.filter((t) => t.date === dayOffset(0) && (doctorId === undefined || t.doctorId === doctorId))
 const serving = (doctorId) => todays(doctorId).find((t) => t.status === 'called' || t.status === 'in-consult')
 
 export function avgConsultMin(doctorId) {
@@ -66,13 +66,13 @@ r.get('/', (req, res) => {
   })
   const patientId = req.query.patientId ? Number(req.query.patientId) : undefined
   const mine = patientId ? todays().filter((t) => t.patientId === patientId).sort(byIssue).reverse().map(view) : undefined
-  res.json({ date: today(), lanOrigin: lanOrigin(), doctors, ...(mine && { mine }) })
+  res.json({ date: dayOffset(0), lanOrigin: lanOrigin(), doctors, ...(mine && { mine }) })
 })
 
 // :ref is a numeric id or a token code such as D2-014 (today's)
 r.get('/:ref', (req, res) => {
   const ref = req.params.ref.toUpperCase()
-  const t = db.tokens.find((x) => (/^\d+$/.test(ref) ? x.id === Number(ref) : x.date === today() && x.code === ref))
+  const t = db.tokens.find((x) => (/^\d+$/.test(ref) ? x.id === Number(ref) : x.date === dayOffset(0) && x.code === ref))
   if (!t) throw new HttpError(404, 'Token not found')
   res.json(scrub(req, view(t)))
 })
@@ -83,7 +83,7 @@ r.post('/', validate(issue), (req, res) => {
   if (appointmentId) {
     const a = find('appointments', appointmentId, 'Appointment')
     if (isInactive(a.status) || a.status === 'completed') throw new HttpError(409, `Appointment is already ${a.status}`)
-    if (a.date !== today()) throw new HttpError(409, 'Check-in is only possible on the appointment day')
+    if (a.date !== dayOffset(0)) throw new HttpError(409, 'Check-in is only possible on the appointment day')
     if (doctorId && doctorId !== a.doctorId) throw new HttpError(400, 'doctorId does not match the appointment')
     ;({ doctorId, patientId } = a)
   }
@@ -94,7 +94,7 @@ r.post('/', validate(issue), (req, res) => {
 
   const seq = Math.max(0, ...todays(doctorId).map((t) => t.seq)) + 1 // resets each day because only today's tokens count
   const t = {
-    id: Math.max(0, ...db.tokens.map((x) => x.id)) + 1, code: `D${doctorId}-${pad(seq)}`, seq, doctorId, date: today(),
+    id: Math.max(0, ...db.tokens.map((x) => x.id)) + 1, code: `D${doctorId}-${pad(seq)}`, seq, doctorId, date: dayOffset(0),
     patientId: patientId ?? null, appointmentId: appointmentId ?? null, name, status: 'waiting',
     issuedAt: new Date().toISOString(), calledAt: null, startedAt: null, finishedAt: null, recalls: 0,
   }

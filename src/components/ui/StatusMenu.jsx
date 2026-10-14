@@ -1,3 +1,4 @@
+// Status badge that opens a menu of valid next statuses with a note and a confirm for destructive ones.
 import { useState } from 'react'
 import { ChevronDown, AlertTriangle } from 'lucide-react'
 import Modal from './Modal'

@@ -1,3 +1,4 @@
+// Doctor form for issuing a prescription.
 import { useState } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
 import Modal from '../ui/Modal'

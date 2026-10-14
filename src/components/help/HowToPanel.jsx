@@ -1,3 +1,4 @@
+// Role-specific how-to checklist.
 import { CheckCircle2, PlayCircle } from 'lucide-react'
 import SlideOver from '../ui/SlideOver'
 import Button from '../ui/Button'

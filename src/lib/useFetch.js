@@ -1,3 +1,4 @@
+// GET a path and return {data, error, loading, refetch}.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from './api'
 

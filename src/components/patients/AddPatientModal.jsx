@@ -1,3 +1,4 @@
+// Form for registering or editing a patient.
 import { useState } from 'react'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'

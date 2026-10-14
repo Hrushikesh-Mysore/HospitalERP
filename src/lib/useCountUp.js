@@ -1,3 +1,4 @@
+// Animates a number from 0 to its value (KPI count-up).
 import { useEffect, useState } from 'react'
 
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches

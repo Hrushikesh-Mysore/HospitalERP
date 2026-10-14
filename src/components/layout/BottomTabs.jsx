@@ -1,3 +1,4 @@
+// Phone tab bar with a More sheet (role, extra pages, help, reset).
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Ellipsis, RotateCcw, HelpCircle } from 'lucide-react'

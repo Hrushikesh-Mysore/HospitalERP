@@ -1,3 +1,4 @@
+// App shell: sidebar, top bar, phone tabs and page area; shows "Who are you?" for an unsigned Patient.
 import { Suspense, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
@@ -10,7 +11,7 @@ import HowToPanel from '../help/HowToPanel'
 import CommandPalette from '../help/CommandPalette'
 import { useRole } from '../../lib/roleStore'
 import { access } from '../../lib/roles'
-import WhoAreYou from '../patient/WhoAreYou'
+import WhoAreYou from '../patients/WhoAreYou'
 
 const seen = () => { try { return localStorage.getItem('tourSeen') === '1' } catch { return true } }
 

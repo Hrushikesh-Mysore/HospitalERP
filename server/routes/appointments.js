@@ -1,3 +1,4 @@
+// Appointments API: list, book (409 on a taken slot), reschedule/cancel, and the doctor/admin status endpoint.
 import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'

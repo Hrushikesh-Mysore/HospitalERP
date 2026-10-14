@@ -1,3 +1,4 @@
+// First-visit guided tour.
 import { useState } from 'react'
 import { LayoutDashboard, Users, CalendarDays, BedDouble, UserCog } from 'lucide-react'
 import Modal from '../ui/Modal'

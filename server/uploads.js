@@ -1,3 +1,4 @@
+// Upload storage helpers: file signature detection, random file names, saving and removing files under server/uploads.
 import fs from 'node:fs'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'

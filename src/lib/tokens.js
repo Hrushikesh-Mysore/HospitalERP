@@ -1,3 +1,4 @@
+// Token colors, labels and wait-time formatting shared by the queue screens.
 export const tokenTone = { waiting: 'amber', called: 'blue', 'in-consult': 'brand', done: 'green', skipped: 'gray' }
 export const tokenLabel = { waiting: 'Waiting', called: 'Called', 'in-consult': 'In consult', done: 'Done', skipped: 'Skipped' }
 export const fmtWait = (min) => (min <= 0 ? 'Next' : `~${min} min`)

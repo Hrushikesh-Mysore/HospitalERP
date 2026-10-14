@@ -1,3 +1,4 @@
+// Server entry: wires security middleware, the role/patient checks, live-sync broadcast and every /api route, then listens on 0.0.0.0 and prints the LAN URL + QR.
 import 'dotenv/config'
 import express from 'express'
 import helmet from 'helmet'

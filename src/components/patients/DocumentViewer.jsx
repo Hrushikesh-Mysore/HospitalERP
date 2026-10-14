@@ -1,3 +1,4 @@
+// Full-screen viewer for an uploaded image or PDF.
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronLeft, ChevronRight, ExternalLink, Trash2, X } from 'lucide-react'

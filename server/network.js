@@ -1,3 +1,4 @@
+// Finds the laptop LAN address so the phone URL and QR code can be printed.
 import os from 'node:os'
 
 export function lanAddress() {
