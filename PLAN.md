@@ -20,8 +20,8 @@
 - [x] Appointments: date strip, timeline by doctor, status change, Book modal with inline 409 error
 
 ## Phase 4 — Beds + Emergency
-- [ ] Beds: ward tabs, tile grid, legend, popover actions, live occupancy bars
-- [ ] Emergency: triage queue, wait timers, 5s polling, critical pulse, add case form, assign bed -> Beds
+- [x] Beds: ward tabs, tile grid, legend, popover actions, live occupancy bars
+- [x] Emergency: triage queue, wait timers, 5s polling, critical pulse, add case form, assign bed -> Beds
 
 ## Phase 5 — Roles + Usage
 - [ ] Role switcher changes sidebar + Overview widgets
