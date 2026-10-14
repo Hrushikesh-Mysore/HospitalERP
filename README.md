@@ -5,7 +5,8 @@ MediCore is a role-aware hospital dashboard that keeps patients, appointments, b
 ## Features
 - Live Overview: KPIs computed from the API, admissions and department charts, activity feed
 - Patients: search, filter (status, ward), sort, pagination, detail slide-over with vitals and history, add-patient form
-- Appointments: date strip, per-doctor timeline, status actions, booking with server-side slot-conflict (409) handling
+- Patient records: Admin and Receptionist can edit; only Admin can delete (UI-enforced, the demo API has no auth). Delete is blocked while admitted (409), cancels future appointments, marks past open ones no-show, drops matching waiting emergency cases, and offers a 5s Undo
+- Appointments: date strip, per-doctor timeline, Confirm / Complete / Cancel / No-show actions (cancelled and no-show free the slot), booking with server-side slot-conflict (409) handling
 - Beds: ward tabs, status-coloured grid, admit / discharge / cleaning, live occupancy bars
 - Emergency: triage queue (priority, then arrival), live wait timers, pulsing critical cases, assign-to-bed flow
 - Live sync: changes made on one device appear on every other open device within a moment (Server-Sent Events, 5s polling fallback); a green "Live" dot in the top bar shows the connection

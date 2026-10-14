@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'
 import { validate } from '../middleware/validate.js'
 import { dayOffset } from '../data/seed.js'
-import { find } from '../services.js'
+import { find, deletionImpact, softDeletePatient, restorePatient } from '../services.js'
 
 const schema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -13,6 +13,8 @@ const schema = z.object({
   condition: z.string().trim().min(2).max(100),
   doctorId: z.number().int(),
 })
+
+const update = schema.partial().refine((v) => Object.keys(v).length > 0, 'Nothing to update')
 
 const r = Router()
 const withDoctor = (p) => ({ ...p, doctor: db.doctors.find((d) => d.id === p.doctorId) ?? null })
@@ -26,4 +28,18 @@ r.post('/', validate(schema), (req, res) => {
   logActivity(`New patient registered: ${p.name}`, 'admit')
   res.status(201).json(withDoctor(p))
 })
+r.get('/:id/impact', (req, res) => {
+  const { cancel, noShow, cases } = deletionImpact(find('patients', req.params.id, 'Patient'))
+  const brief = (a) => ({ id: a.id, date: a.date, time: a.time, doctor: db.doctors.find((d) => d.id === a.doctorId)?.name })
+  res.json({ cancel: cancel.map(brief), noShow: noShow.map(brief), cases: cases.map((c) => ({ id: c.id, complaint: c.complaint, priority: c.priority })) })
+})
+r.patch('/:id', validate(update), (req, res) => {
+  const p = find('patients', req.params.id, 'Patient')
+  if (req.body.doctorId !== undefined) find('doctors', req.body.doctorId, 'Doctor')
+  Object.assign(p, req.body)
+  logActivity(`Patient record updated: ${p.name}`, 'admit')
+  res.json(withDoctor(p))
+})
+r.delete('/:id', (req, res) => res.json(softDeletePatient(find('patients', req.params.id, 'Patient'))))
+r.post('/:id/restore', (req, res) => res.json(withDoctor(restorePatient(Number(req.params.id)).patient)))
 export default r

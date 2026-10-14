@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { db } from '../data/store.js'
 import { dayOffset } from '../data/seed.js'
+import { isInactive } from '../services.js'
 
 const weekday = (date) => new Date(`${date}T00:00:00Z`).toLocaleDateString('en', { weekday: 'short', timeZone: 'UTC' })
 
@@ -15,7 +16,7 @@ function doctorStats(doctorId) {
     .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0]
   return {
     doctor,
-    appointmentsToday: mine.filter((a) => a.date === today && a.status !== 'cancelled').length,
+    appointmentsToday: mine.filter((a) => a.date === today && !isInactive(a.status)).length,
     admittedPatients: db.patients.filter((p) => p.doctorId === doctorId && p.status === 'admitted').length,
     nextAppointment: upcoming
       ? { date: upcoming.date, time: upcoming.time, patient: db.patients.find((p) => p.id === upcoming.patientId)?.name }
@@ -37,7 +38,7 @@ r.get('/', (req, res) => {
     kpis: {
       totalPatients: db.patients.length,
       admitted: db.patients.filter((p) => p.status === 'admitted').length,
-      appointments: db.appointments.filter((a) => a.status !== 'cancelled').length,
+      appointments: db.appointments.filter((a) => !isInactive(a.status)).length,
       bedsAvailable: db.beds.filter((b) => b.status === 'free').length,
       occupancyPct: Math.round((occupied / db.beds.length) * 100),
       activeEmergencies: db.emergency.filter((e) => e.status === 'waiting').length,

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { isInactive } from '../../lib/status'
 import { AlertCircle } from 'lucide-react'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
@@ -15,7 +16,7 @@ export default function BookAppointmentModal({ open, onClose, date, patients, do
   const [busy, setBusy] = useState(false)
   const toast = useToast()
 
-  const taken = (t) => booked.some((a) => a.doctorId === Number(doctorId) && a.date === date && a.time === t && a.status !== 'cancelled')
+  const taken = (t) => booked.some((a) => a.doctorId === Number(doctorId) && a.date === date && a.time === t && !isInactive(a.status))
 
   const submit = async (e) => {
     e.preventDefault()

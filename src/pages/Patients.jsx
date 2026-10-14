@@ -11,6 +11,9 @@ import SlideOver from '../components/ui/SlideOver'
 import { inputCls } from '../components/ui/Field'
 import AddPatientModal from '../components/patients/AddPatientModal'
 import PatientDetails from '../components/patients/PatientDetails'
+import DeletePatientModal from '../components/patients/DeletePatientModal'
+import { useToast } from '../lib/toastStore'
+import { api } from '../lib/api'
 import { statusTone } from '../lib/status'
 import { useRole } from '../lib/roleStore'
 import { useFetch } from '../lib/useFetch'
@@ -33,6 +36,21 @@ export default function Patients() {
   const [page, setPage] = useState(0)
   const [selected, setSelected] = useState(null)
   const [adding, setAdding] = useState(false)
+  const [editing, setEditing] = useState(null)
+  const [deleting, setDeleting] = useState(null)
+  const toast = useToast()
+  const canEdit = role === 'Admin' || role === 'Receptionist'
+  const canDelete = role === 'Admin'
+
+  const onDeleted = (patient, result) => {
+    setDeleting(null); setSelected(null); pts.refetch()
+    const undo = async () => {
+      try { await api(`/patients/${patient.id}/restore`, { method: 'POST' }); toast(`${patient.name} restored`); pts.refetch() }
+      catch (e) { toast(e.message, 'error') }
+    }
+    const n = result.cancelled.length + result.noShow.length
+    toast(`${patient.name} deleted${n ? ` · ${n} appointment${n > 1 ? 's' : ''} updated` : ''}`, 'success', { action: { label: 'Undo', onClick: undo }, duration: 5000 })
+  }
 
   const bedList = beds.data
   const rows = useMemo(() => {
@@ -110,9 +128,12 @@ export default function Patients() {
         </div>
       </Card>
       <SlideOver open={!!selected} onClose={() => setSelected(null)} title="Patient details">
-        {selected && <PatientDetails patient={selected} />}
+        {selected && <PatientDetails patient={selected} onEdit={canEdit ? () => setEditing(selected) : undefined} onDelete={canDelete ? () => setDeleting(selected) : undefined} />}
       </SlideOver>
       <AddPatientModal open={adding} onClose={() => setAdding(false)} doctors={docs.data?.doctors ?? []} onCreated={pts.refetch} />
+      <AddPatientModal key={editing?.id ?? 'none'} patient={editing} open={!!editing} onClose={() => setEditing(null)} doctors={docs.data?.doctors ?? []}
+        onCreated={(p) => { pts.refetch(); setSelected(p) }} />
+      <DeletePatientModal patient={deleting} onClose={() => setDeleting(null)} onDeleted={onDeleted} />
     </div>
   )
 }

@@ -7,8 +7,11 @@ import { api } from '../../lib/api'
 
 const empty = { name: '', age: '', gender: 'F', phone: '', condition: '', doctorId: '' }
 
-export default function AddPatientModal({ open, onClose, doctors, onCreated }) {
-  const [f, setF] = useState(empty)
+const toForm = (p) => ({ name: p.name, age: String(p.age), gender: p.gender, phone: p.phone, condition: p.condition, doctorId: String(p.doctorId) })
+
+// Add form, or the same form prefilled when `patient` is given (render with key={patient.id} so it resets per patient)
+export default function AddPatientModal({ open, onClose, doctors, onCreated, patient }) {
+  const [f, setF] = useState(patient ? toForm(patient) : empty)
   const [errors, setErrors] = useState({})
   const [busy, setBusy] = useState(false)
   const toast = useToast()
@@ -26,10 +29,11 @@ export default function AddPatientModal({ open, onClose, doctors, onCreated }) {
     if (Object.keys(errs).length) return
     setBusy(true)
     try {
-      const p = await api('/patients', { method: 'POST', body: { ...f, age: Number(f.age), doctorId: Number(f.doctorId) } })
-      toast(`${p.name} registered`)
-      setF(empty)
-      onCreated()
+      const body = { ...f, age: Number(f.age), doctorId: Number(f.doctorId) }
+      const p = patient ? await api(`/patients/${patient.id}`, { method: 'PATCH', body }) : await api('/patients', { method: 'POST', body })
+      toast(patient ? `${p.name} updated` : `${p.name} registered`)
+      if (!patient) setF(empty)
+      onCreated(p)
       onClose()
     } catch (err) {
       setErrors({ form: err.message })
@@ -39,7 +43,7 @@ export default function AddPatientModal({ open, onClose, doctors, onCreated }) {
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Add patient">
+    <Modal open={open} onClose={onClose} title={patient ? 'Edit patient' : 'Add patient'}>
       <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2"><Field label="Full name" error={errors.name}><input className={inputCls} value={f.name} onChange={set('name')} /></Field></div>
         <Field label="Age" error={errors.age}><input type="number" className={inputCls} value={f.age} onChange={set('age')} /></Field>
@@ -55,7 +59,7 @@ export default function AddPatientModal({ open, onClose, doctors, onCreated }) {
         {errors.form && <p className="text-sm font-medium text-danger sm:col-span-2">{errors.form}</p>}
         <div className="flex justify-end gap-2 sm:col-span-2">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Add patient'}</Button>
+          <Button type="submit" disabled={busy}>{busy ? 'Saving…' : patient ? 'Save changes' : 'Add patient'}</Button>
         </div>
       </form>
     </Modal>
