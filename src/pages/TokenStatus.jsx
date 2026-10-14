@@ -1,3 +1,4 @@
+// Public phone page for one token code (opened from the slip link or QR).
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { HeartPulse } from 'lucide-react'

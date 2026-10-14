@@ -63,3 +63,46 @@
 - [x] Sun/moon toggle in top bar; system default; remembered in localStorage
 - [x] Inline script in index.html sets data-theme before first paint
 - [x] Build and lint clean
+
+## Phase 9A — LAN access + live sync
+- [x] Vite `host: true`, `dev:lan` script, relative `/api` paths only
+- [x] `GET /api/events` (SSE) broadcasts `{type, resource}` after every successful write; 25s heartbeat
+- [x] `useLiveSync` refetches affected resources, falls back to 5s polling; green/grey Live dot
+- [x] Server prints LAN URL + QR code on start; README hotspot/troubleshooting
+
+## Phase 9B — Patient edit / delete
+- [x] `PATCH /api/patients/:id` (partial), `DELETE /api/patients/:id` soft delete + restore (Undo toast, then purge)
+- [x] Admitted patient cannot be deleted (409); future appointments cancelled, past open ones no-show, slots freed
+- [x] Edit form prefilled; delete confirm lists what it cancels; Cancel / No-show on appointments
+
+## Phase 9C — First come, first served tokens
+- [x] Tokens per doctor per day (`D2-014`), assigned server-side; waiting, called, in-consult, done, skipped
+- [x] Issue, call-next, start, finish, skip, recall; order by issue time; emergency triage stays separate
+- [x] Doctor console, reception queue with position and estimated wait, `/display` board, `/token/:ref` phone view
+- [x] `server/tokens.test.js`
+
+## Phase 9D — Phone layout + Patient role
+- [x] Bottom tab bar per role with a More sheet, bottom-sheet modals, 44px touch targets
+- [x] Patient role: Book, My Token, prescriptions; doctor prescribing (`/api/prescriptions`)
+
+## Phase 9E — Patient documents
+- [x] multer upload (jpeg/png/webp/pdf, 5 MB, signature check, random names) into `server/uploads/`
+- [x] List / serve / delete routes; browser-side image compression; viewer; categories; reset clears files
+- [x] `server/documents.test.js`, fake files in `samples/`
+
+## Phase 9F — Doctor status editing
+- [x] Transition tables for appointments and patients (`GET /api/status-rules`); invalid moves 409
+- [x] `admitted` / `discharged` only through the bed flow
+- [x] `statusHistory` with optional note (max 200); timeline in patient panel; status menu for Doctor/Admin
+- [x] Demo-level role headers checked on the server (`server/actor.js`); `server/status.test.js`
+
+## Phase 10A — Patient portal (committed with the token bug fix, 19ad8a4)
+- [x] "Who are you?" sign-in: demo patients, name + phone, or register; session token per patient
+- [x] Server checks the patient id on patient routes (`server/patientAccess.js`); 403 elsewhere
+- [x] Cancel own appointment, camera upload, My Records tab, two seeded demo patients with appointment + token
+- [x] Bug fix: public token slip and `/display` ignore the browser role; token celebration animation
+- [x] `server/patient.test.js`
+
+## Phase 10B — Cleanup
+- [x] Removed unused `Table.jsx` and `@types/react*`; shared date helpers; `WhoAreYou` moved under `components/patients`
+- [x] Docs in `docs/` (BUILD_LOG, HOW_IT_WORKS, DEMO); header comment on each major file

@@ -1,3 +1,4 @@
+// Emergency page: triage queue with wait timers and add-case form.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Siren } from 'lucide-react'

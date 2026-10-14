@@ -1,3 +1,4 @@
+// Demo-level role check: reads X-Role / X-Doctor-Id, provides requireRole, requireOwnership and byOf (who made a change).
 import { HttpError } from './middleware/errorHandler.js'
 import { db } from './data/store.js'
 

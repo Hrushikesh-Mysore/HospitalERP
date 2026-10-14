@@ -1,3 +1,4 @@
+// Patient page: book a visit, see upcoming appointments, check in or cancel.
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CalendarCheck, AlertCircle } from 'lucide-react'

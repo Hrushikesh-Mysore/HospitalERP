@@ -1,3 +1,4 @@
+// One-shot confetti burst used when a token is issued.
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 

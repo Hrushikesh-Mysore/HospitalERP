@@ -1,3 +1,4 @@
+// Server-Sent Events: the /api/events stream and the middleware that broadcasts {type, resource} after each successful write.
 const clients = new Set()
 const TYPES = { POST: 'created', PATCH: 'updated', PUT: 'updated', DELETE: 'deleted' }
 

@@ -1,3 +1,4 @@
+// Appointments page: day strip, timeline per doctor, status menu or quick buttons, booking.
 import { useMemo, useState } from 'react'
 import { Plus, CalendarDays } from 'lucide-react'
 import Card from '../components/ui/Card'

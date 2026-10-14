@@ -1,3 +1,4 @@
+// Navigation items shared by the desktop sidebar and the phone tab bar.
 import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, Ticket, CalendarPlus, FolderHeart } from 'lucide-react'
 
 // Single source for navigation items, shared by the desktop sidebar and the phone tab bar.

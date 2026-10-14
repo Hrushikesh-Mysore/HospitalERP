@@ -1,3 +1,4 @@
+// Patient entry screen: pick a demo patient, sign in with name + phone, or register.
 import { useState } from 'react'
 import { HeartPulse, UserRound, AlertCircle } from 'lucide-react'
 import Card from '../ui/Card'

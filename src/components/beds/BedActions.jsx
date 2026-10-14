@@ -1,3 +1,4 @@
+// Admit, discharge or mark-cleaning actions for one bed.
 import { useState } from 'react'
 import Button from '../ui/Button'
 import { inputCls } from '../ui/Field'

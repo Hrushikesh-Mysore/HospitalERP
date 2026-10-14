@@ -1,3 +1,4 @@
+// Route table: lazy-loaded pages inside the Layout, plus the public /display and /token pages.
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'

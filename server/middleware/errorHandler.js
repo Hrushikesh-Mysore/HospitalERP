@@ -1,3 +1,4 @@
+// HttpError class plus the central error handler and 404 handler (also maps upload errors).
 export class HttpError extends Error {
   constructor(status, message, extra) { super(message); this.status = status; this.extra = extra }
 }

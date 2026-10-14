@@ -1,3 +1,4 @@
+// Desktop navigation and the Reset demo data button.
 import { NavLink } from 'react-router-dom'
 import { HeartPulse, RotateCcw } from 'lucide-react'
 import { useRole } from '../../lib/roleStore'

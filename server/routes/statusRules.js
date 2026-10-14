@@ -1,3 +1,4 @@
+// Serves the status transition tables so the UI only offers valid next statuses.
 import { Router } from 'express'
 import { APPOINTMENT_TRANSITIONS, PATIENT_TRANSITIONS, PATIENT_STATUSES, NOTE_MAX } from '../services.js'
 

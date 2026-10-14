@@ -1,3 +1,4 @@
+// Role dropdown plus the doctor picker or signed-in patient name.
 import { useRole } from '../../lib/roleStore'
 import { useFetch } from '../../lib/useFetch'
 import { roles } from '../../lib/roles'

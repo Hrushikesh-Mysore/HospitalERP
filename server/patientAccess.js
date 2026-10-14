@@ -1,3 +1,4 @@
+// Patient sessions and the per-route guard that limits the Patient role to its own records (demo-level, not real auth).
 import crypto from 'node:crypto'
 import { db } from './data/store.js'
 import { dayOffset } from './data/seed.js'

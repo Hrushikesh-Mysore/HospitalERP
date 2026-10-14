@@ -1,3 +1,4 @@
+// Patients API: list, register, edit, soft delete with impact check and undo, and the status endpoint.
 import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'

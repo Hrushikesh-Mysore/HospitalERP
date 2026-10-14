@@ -1,3 +1,4 @@
+// The theme context and useTheme hook.
 import { createContext, useContext } from 'react'
 
 export const ThemeContext = createContext({ theme: 'light', toggle: () => {} })

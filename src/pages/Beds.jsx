@@ -1,3 +1,4 @@
+// Beds page: ward tabs, bed grid, admit/discharge popover, bed assignment for emergency cases.
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'

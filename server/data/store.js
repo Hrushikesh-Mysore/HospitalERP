@@ -1,3 +1,4 @@
+// The in-memory database (db), the soft-delete trash, resetDb and the activity log.
 import { buildData } from './seed.js'
 import { removeFile } from '../uploads.js'
 

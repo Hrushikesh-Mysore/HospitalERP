@@ -1,3 +1,4 @@
+// One shared EventSource for the app, the map of which writes affect which resources, and connection status.
 import { useSyncExternalStore } from 'react'
 
 // One shared EventSource for the whole app, opened while anything is subscribed.

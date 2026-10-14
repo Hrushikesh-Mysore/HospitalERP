@@ -1,3 +1,4 @@
+// Top bar: search, live dot, help, theme toggle and role switcher.
 import ThemeToggle from './ThemeToggle'
 import LiveDot from './LiveDot'
 import RoleSwitcher from './RoleSwitcher'

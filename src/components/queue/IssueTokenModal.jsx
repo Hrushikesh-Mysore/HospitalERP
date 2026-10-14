@@ -1,3 +1,4 @@
+// Issue a token from a booked appointment or as a walk-in, and show its link/QR.
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
 import Modal from '../ui/Modal'
@@ -7,8 +8,8 @@ import { useFetch } from '../../lib/useFetch'
 import { api } from '../../lib/api'
 import { isInactive } from '../../lib/status'
 import { fmtWait, trackUrl } from '../../lib/tokens'
+import { todayISO } from '../../lib/dates'
 
-const today = () => new Date().toISOString().slice(0, 10)
 
 export default function IssueTokenModal({ lanOrigin, doctors, activeAppointmentIds, onClose, onIssued }) {
   const appts = useFetch('/appointments')
@@ -21,7 +22,7 @@ export default function IssueTokenModal({ lanOrigin, doctors, activeAppointmentI
   const [copied, setCopied] = useState(false)
 
   const open = (appts.data ?? [])
-    .filter((a) => a.date === today() && !isInactive(a.status) && a.status !== 'completed' && !activeAppointmentIds.has(a.id))
+    .filter((a) => a.date === todayISO() && !isInactive(a.status) && a.status !== 'completed' && !activeAppointmentIds.has(a.id))
     .sort((a, b) => a.time.localeCompare(b.time))
 
   const issue = async (body) => {

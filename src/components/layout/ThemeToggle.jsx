@@ -1,3 +1,4 @@
+// Sun/moon button for light and dark mode.
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from '../../lib/themeStore'
 

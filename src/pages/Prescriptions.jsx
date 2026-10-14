@@ -1,3 +1,4 @@
+// Patient "My Records" page (route /records): prescriptions plus uploaded documents.
 import { Pill } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'

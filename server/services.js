@@ -1,3 +1,4 @@
+// Business rules shared by routes: slot conflicts, status transition tables, bed admit/discharge, soft delete and restore of patients.
 import { db, logActivity, trash } from './data/store.js'
 import { removeFile } from './uploads.js'
 import { dayOffset } from './data/seed.js'
@@ -8,12 +9,11 @@ export const find = (list, id, label) => {
   if (!item) throw new HttpError(404, `${label} not found`)
   return item
 }
-const today = () => dayOffset(0)
 
 // Shared by staff registration and the patient portal so new patients always look the same.
 export function createPatient(data) {
-  const p = { id: Math.max(0, ...db.patients.map((x) => x.id)) + 1, ...data, status: 'outpatient', bedId: null, registeredOn: today(),
-    vitals: { heartRate: 72, bp: '120/80', temp: 36.6, spo2: 98 }, history: [{ date: today(), event: 'Registered' }] }
+  const p = { id: Math.max(0, ...db.patients.map((x) => x.id)) + 1, ...data, status: 'outpatient', bedId: null, registeredOn: dayOffset(0),
+    vitals: { heartRate: 72, bp: '120/80', temp: 36.6, spo2: 98 }, history: [{ date: dayOffset(0), event: 'Registered' }] }
   db.patients.push(p)
   logActivity(`New patient registered: ${p.name}`, 'admit')
   return p
@@ -29,8 +29,8 @@ export function deletionImpact(patient) {
   const open = db.appointments.filter((a) => a.patientId === patient.id && !['completed', 'cancelled', 'no-show'].includes(a.status))
   const sameName = (c) => c.name.trim().toLowerCase() === patient.name.trim().toLowerCase() && c.age === patient.age
   return {
-    cancel: open.filter((a) => a.date >= today()),
-    noShow: open.filter((a) => a.date < today()),
+    cancel: open.filter((a) => a.date >= dayOffset(0)),
+    noShow: open.filter((a) => a.date < dayOffset(0)),
     cases: db.emergency.filter((c) => c.status === 'waiting' && (c.patientId === patient.id || sameName(c))),
   }
 }
@@ -108,7 +108,7 @@ export function assertAppointmentTransition(a, to) {
   if (!allowed.includes(to)) {
     throw new HttpError(409, `Cannot move an appointment from ${a.status} to ${to}. ${allowed.length ? `From ${a.status} you can go to: ${allowed.join(', ')}.` : `${a.status} is a final status.`}`)
   }
-  if (to === 'no-show' && a.date > today()) throw new HttpError(409, 'Can only mark no-show on or after the appointment date')
+  if (to === 'no-show' && a.date > dayOffset(0)) throw new HttpError(409, 'Can only mark no-show on or after the appointment date')
 }
 
 export function changeAppointmentStatus(a, to, { by, note } = {}) {
@@ -135,7 +135,7 @@ export function changePatientStatus(p, to, { by, note } = {}) {
   }
   const from = p.status
   p.status = to
-  p.history.push({ date: today(), event: `Status: ${from} → ${to}` })
+  p.history.push({ date: dayOffset(0), event: `Status: ${from} → ${to}` })
   recordStatus(p, from, to, by, note)
   logActivity(`${p.name} is now ${to}`, 'admit')
 }
@@ -147,10 +147,10 @@ export function admitToBed(bed, patient, by, note) {
   const from = patient.status
   patient.status = 'admitted'; patient.bedId = bed.id
   recordStatus(patient, from, 'admitted', by, note)
-  patient.history.push({ date: today(), event: `Admitted to ${bed.label}` })
-  const entry = db.admissionLog.find((e) => e.date === today())
+  patient.history.push({ date: dayOffset(0), event: `Admitted to ${bed.label}` })
+  const entry = db.admissionLog.find((e) => e.date === dayOffset(0))
   if (entry) entry.count++
-  else db.admissionLog.push({ date: today(), count: 1 })
+  else db.admissionLog.push({ date: dayOffset(0), count: 1 })
   logActivity(`${patient.name} admitted to ${bed.ward} bed ${bed.label}`, 'admit')
 }
 
@@ -160,7 +160,7 @@ export function dischargeBed(bed, by, note) {
   if (patient) {
     recordStatus(patient, patient.status, 'discharged', by, note)
     patient.status = 'discharged'; patient.bedId = null
-    patient.history.push({ date: today(), event: `Discharged from ${bed.label}` })
+    patient.history.push({ date: dayOffset(0), event: `Discharged from ${bed.label}` })
     logActivity(`${patient.name} discharged from ${bed.label}`, 'discharge')
   }
   bed.status = 'cleaning'; bed.patientId = null

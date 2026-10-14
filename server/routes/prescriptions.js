@@ -1,3 +1,4 @@
+// Prescriptions API: list (optionally per patient) and issue.
 import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'

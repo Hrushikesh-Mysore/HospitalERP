@@ -1,3 +1,4 @@
+// Which pages each role can open and which appear as phone tabs.
 export const roles = ['Admin', 'Doctor', 'Receptionist', 'Patient']
 
 export const access = {

@@ -1,3 +1,4 @@
+// Overview numbers: KPIs, 14-day admissions, appointments by department, activity feed (per-doctor when asked).
 import { Router } from 'express'
 import { db } from '../data/store.js'
 import { dayOffset } from '../data/seed.js'

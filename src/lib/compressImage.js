@@ -1,3 +1,4 @@
+// Shrinks a photo in the browser (canvas, max 1600px, JPEG) before upload.
 const MAX_SIDE = 1600
 const QUALITY = 0.82
 

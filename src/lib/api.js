@@ -1,3 +1,4 @@
+// The single fetch wrapper for /api: adds role headers, handles JSON/FormData and turns errors into Error objects.
 import { actor } from './actor'
 
 // anon: for the public pages (token slip, waiting-room board). They show the same to everyone, so they must not

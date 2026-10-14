@@ -1,3 +1,4 @@
+// Overview page: KPIs, charts and activity feed, varying by role.
 import { Users, BedDouble, CalendarDays, Activity, UserPlus, Siren, LogOut, Sparkles } from 'lucide-react'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import Card from '../components/ui/Card'

@@ -1,3 +1,4 @@
+// Applies the light/dark theme to the page and remembers the choice.
 import { useEffect, useState } from 'react'
 import { ThemeContext, applyTheme, storedTheme, systemTheme } from './themeStore'
 

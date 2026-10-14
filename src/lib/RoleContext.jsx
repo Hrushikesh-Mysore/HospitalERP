@@ -1,3 +1,4 @@
+// Holds the active role, doctor and signed-in patient (kept in localStorage) and mirrors them into lib/actor.js.
 import { useEffect, useState } from 'react'
 import { RoleContext } from './roleStore'
 import { roles } from './roles'

@@ -1,3 +1,4 @@
+// Patient portal sign-in: demo patients, name + phone login, and registration; each returns a session token.
 import { Router } from 'express'
 import { z } from 'zod'
 import { db } from '../data/store.js'

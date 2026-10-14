@@ -1,3 +1,4 @@
+// Returns a function that resets the demo data on the server.
 import { api } from './api'
 import { useToast } from './toastStore'
 

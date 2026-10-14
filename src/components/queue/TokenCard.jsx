@@ -1,3 +1,4 @@
+// The patient-facing token: code, status message, position (with celebration when just issued).
 import { motion, useReducedMotion } from 'framer-motion'
 import { Ticket } from 'lucide-react'
 import { fmtWait } from '../../lib/tokens'

@@ -1,3 +1,4 @@
+// Green/grey dot showing whether live sync is connected.
 import { useLiveStatus } from '../../lib/liveStore'
 
 export default function LiveDot() {

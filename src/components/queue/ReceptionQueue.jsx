@@ -1,3 +1,4 @@
+// Reception view of each doctor's live queue with position and wait.
 import { useState } from 'react'
 import { Plus, Monitor, Ticket } from 'lucide-react'
 import Card from '../ui/Card'
