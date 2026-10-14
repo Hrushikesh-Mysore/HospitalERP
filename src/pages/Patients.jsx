@@ -11,12 +11,14 @@ import { inputCls } from '../components/ui/Field'
 import AddPatientModal from '../components/patients/AddPatientModal'
 import PatientDetails from '../components/patients/PatientDetails'
 import { statusTone } from '../components/patients/statusTone'
+import { useRole } from '../lib/RoleContext'
 import { useFetch } from '../lib/useFetch'
 
 const PAGE = 10
 const wardOf = (p, beds) => beds.find((b) => b.id === p.bedId)?.ward ?? ''
 
 export default function Patients() {
+  const { role, doctorId } = useRole()
   const pts = useFetch('/patients')
   const beds = useFetch('/beds')
   const docs = useFetch('/doctors')
@@ -33,11 +35,11 @@ export default function Patients() {
   const rows = useMemo(() => {
     const term = q.trim().toLowerCase()
     const list = (pts.data ?? []).filter((p) =>
-      (!term || p.name.toLowerCase().includes(term) || p.condition.toLowerCase().includes(term)) &&
+      (role !== 'Doctor' || p.doctorId === doctorId) && (!term || p.name.toLowerCase().includes(term) || p.condition.toLowerCase().includes(term)) &&
       (!status || p.status === status) && (!ward || wardOf(p, bedList ?? []) === ward))
     const val = (p) => (sort.key === 'doctor' ? p.doctor?.name ?? '' : p[sort.key])
     return list.sort((a, b) => (val(a) > val(b) ? 1 : val(a) < val(b) ? -1 : 0) * sort.dir)
-  }, [pts.data, bedList, q, status, ward, sort])
+  }, [pts.data, bedList, q, status, ward, sort, role, doctorId])
 
   const pages = Math.max(1, Math.ceil(rows.length / PAGE))
   const cur = Math.min(page, pages - 1)

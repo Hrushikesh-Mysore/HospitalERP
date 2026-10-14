@@ -36,3 +36,21 @@
 - [x] Reset demo data button
 - [x] README (pitch, features, run steps, 3-min demo script)
 - [x] npm run build clean
+
+## Phase 7A — Data and roles
+- [ ] Seed dates relative to today (no hardcoded dates)
+- [ ] 14 days admission history from the API; appointments on all 7 strip days; patients in every ward
+- [ ] Reset restores full seeded state
+- [ ] Doctor / Receptionist role-specific KPIs and widgets (Admin keeps 4 global KPIs)
+- [ ] Doctor picker beside role switcher (view as any of 8 doctors)
+- [ ] curl-verify admit -> stats occupancy -> discharge
+
+## Phase 7B — Visual polish and performance
+- [ ] Bed popover flips upward near viewport bottom
+- [ ] KPI count-up; staggered fade-in for cards and rows (<400ms)
+- [ ] Consistent page header (title, subtitle, primary action right)
+- [ ] Consistent hover / focus-visible / active states
+- [ ] Single source for status colors
+- [ ] Route-level code splitting (lazy + Suspense + Skeleton)
+- [ ] Overview header: today's date + pulsing live indicator
+- [ ] Build and lint clean

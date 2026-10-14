@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'
 import { validate } from '../middleware/validate.js'
+import { dayOffset } from '../data/seed.js'
 import { find, admitToBed, sortEmergency } from '../services.js'
 import { HttpError } from '../middleware/errorHandler.js'
 
@@ -25,8 +26,8 @@ r.post('/:id/assign-bed', validate(z.object({ bedId: z.number().int() })), (req,
   const bed = find('beds', req.body.bedId, 'Bed')
   if (bed.status !== 'free') throw new HttpError(409, `Bed ${bed.label} is ${bed.status}, not free`)
   const patient = { id: Math.max(0, ...db.patients.map((x) => x.id)) + 1, name: c.name, age: c.age, gender: 'O', phone: 'N/A',
-    condition: c.complaint, doctorId: 1, status: 'outpatient', bedId: null, vitals: { heartRate: 90, bp: '120/80', temp: 37, spo2: 96 },
-    history: [{ date: new Date().toISOString().slice(0, 10), event: 'Emergency arrival' }] }
+    condition: c.complaint, doctorId: 1, status: 'outpatient', bedId: null, registeredOn: dayOffset(0), vitals: { heartRate: 90, bp: '120/80', temp: 37, spo2: 96 },
+    history: [{ date: dayOffset(0), event: 'Emergency arrival' }] }
   db.patients.push(patient)
   admitToBed(bed, patient)
   Object.assign(c, { status: 'admitted', patientId: patient.id, bedId: bed.id })

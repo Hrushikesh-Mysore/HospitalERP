@@ -44,7 +44,7 @@ export default function Sidebar({ open, onClose, onReset }) {
         <button onClick={reset} className="mt-auto flex items-center gap-2 rounded-xl border border-dashed border-line px-3 py-2.5 text-sm font-semibold text-muted transition-colors hover:border-brand-500 hover:text-brand-700">
           <RotateCcw size={16} /> Reset demo data
         </button>
-        <p className="mt-3 rounded-xl bg-surface p-3 text-xs text-muted">Viewing as <b className="text-ink">{role}</b>{role === 'Doctor' && ' · Dr. Anil Rao'}</p>
+        <p className="mt-3 rounded-xl bg-surface p-3 text-xs text-muted">Viewing as <b className="text-ink">{role}</b>{role === 'Doctor'}</p>
       </aside>
     </>
   )
