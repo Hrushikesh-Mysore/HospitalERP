@@ -8,12 +8,12 @@
 - [x] Overview page: 4 KPIs, weekly admissions line chart, appointments-by-dept bar chart, activity feed (mock in src/data)
 
 ## Phase 2 — Backend + API
-- [ ] Express in /server (ESM): helmet, cors (localhost:5173), rate-limit, json limit 10kb, zod on POST/PATCH, central error handler, .env/.env.example
-- [ ] Fake data: 40 patients, 8 doctors/5 depts, 30 beds/3 wards, 25 appointments, 8 emergency cases
-- [ ] Endpoints: stats, patients, appointments, beds (admit/discharge/cleaning), emergency (assign-bed), demo/reset
-- [ ] Business logic: admit/discharge sync, 409 slot conflicts, triage sort, assign-bed admits
-- [ ] Vite proxy /api -> :3001; src/lib/api.js + useFetch; Overview wired to /api/stats
-- [ ] Scripts: server, dev:all
+- [x] Express in /server (ESM): helmet, cors (localhost:5173), rate-limit, json limit 10kb, zod on POST/PATCH, central error handler, .env/.env.example
+- [x] Fake data: 40 patients, 8 doctors/5 depts, 30 beds/3 wards, 25 appointments, 8 emergency cases
+- [x] Endpoints: stats, patients, appointments, beds (admit/discharge/cleaning), emergency (assign-bed), demo/reset
+- [x] Business logic: admit/discharge sync, 409 slot conflicts, triage sort, assign-bed admits
+- [x] Vite proxy /api -> :3001; src/lib/api.js + useFetch; Overview wired to /api/stats
+- [x] Scripts: server, dev:all
 
 ## Phase 3 — Patients + Appointments
 - [ ] Patients table (search/filter/sort/paginate), SlideOver details, Add patient modal
