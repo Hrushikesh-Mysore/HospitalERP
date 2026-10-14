@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, Ticket, CalendarPlus, Pill } from 'lucide-react'
+import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, Ticket, CalendarPlus, FolderHeart } from 'lucide-react'
 
 // Single source for navigation items, shared by the desktop sidebar and the phone tab bar.
 export const navItems = [
@@ -10,7 +10,7 @@ export const navItems = [
   { to: '/emergency', label: 'Emergency', short: 'ER', icon: Siren },
   { to: '/book', label: 'Book', icon: CalendarPlus },
   { to: '/my-token', label: 'My Token', icon: Ticket },
-  { to: '/prescriptions', label: 'My Prescriptions', short: 'Rx', icon: Pill },
+  { to: '/records', label: 'My Records', short: 'Records', icon: FolderHeart },
 ]
 
 const renames = {

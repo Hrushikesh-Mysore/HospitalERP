@@ -7,6 +7,9 @@ export const wards = ['General', 'ICU', 'Pediatrics']
 export const departments = ['Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'General Medicine']
 export const slots = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00']
 
+// Two ready-made patients for the Patient portal demo: each has an appointment, a prescription and a queue token.
+export const DEMO_PATIENT_IDS = [38, 39]
+
 export const dayOffset = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10)
 
 export function buildData() {
@@ -67,6 +70,10 @@ export function buildData() {
       status: i < 8 ? mixToday[i] : mixLater[i % 6],
     }
   })
+  appointments.push(
+    { id: 26, patientId: 38, doctorId: 7, date: today, time: '14:00', reason: 'Follow-up', status: 'confirmed' },
+    { id: 27, patientId: 39, doctorId: 8, date: dayOffset(2), time: '10:00', reason: 'Check-up', status: 'scheduled' },
+  )
   const seen = new Set()
   appointments.forEach((a) => {
     let s = slots.indexOf(a.time)
@@ -99,11 +106,21 @@ export function buildData() {
     notes: i % 3 === 0 ? 'Drink plenty of fluids and review in one week.' : '',
   }))
 
+  const tokenAt = (id, patientId, appointmentId, minsAgo) => ({
+    id, code: `D7-${String(id).padStart(3, '0')}`, seq: id, doctorId: 7, date: today, patientId, appointmentId, name: patients[patientId - 1].name,
+    status: 'waiting', issuedAt: new Date(now - minsAgo * 60000).toISOString(), calledAt: null, startedAt: null, finishedAt: null, recalls: 0,
+  })
+  prescriptions.push(
+    { id: 13, patientId: 38, doctorId: patients[37].doctorId, date: dayOffset(-3), medicines: [{ name: 'Cetirizine', dose: '10 mg', frequency: 'Once daily', days: 7 }], notes: '' },
+    { id: 14, patientId: 39, doctorId: patients[38].doctorId, date: dayOffset(-6), medicines: [{ name: 'Paracetamol', dose: '500 mg', frequency: 'Every 6 hours if fever', days: 5 }], notes: 'Drink plenty of fluids.' },
+  )
+
   return {
     patients, doctors, beds, appointments, emergency, admissionLog,
     prescriptions,
     documents: [], // uploaded patient files (metadata); bytes live in server/uploads
-    tokens: [], // first-come-first-served queue tokens; start empty so reset clears them
+    // first-come-first-served queue tokens: the two demo patients are already in doctor 7's line (Reset demo restores this)
+    tokens: [tokenAt(1, 38, 26, 6), tokenAt(2, 39, null, 3)],
     activity: [
       { id: 1, text: `${patients[4].name} admitted to General bed G-05`, type: 'admit', at: new Date(now - 2 * 60000).toISOString() },
       { id: 2, text: 'Dr. Anil Rao confirmed an appointment', type: 'appt', at: new Date(now - 14 * 60000).toISOString() },

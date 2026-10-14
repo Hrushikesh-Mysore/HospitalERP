@@ -33,7 +33,7 @@ export default function App() {
               <Route path="queue" element={<Queue />} />
               <Route path="book" element={<Book />} />
               <Route path="my-token" element={<MyToken />} />
-              <Route path="prescriptions" element={<Prescriptions />} />
+              <Route path="records" element={<Prescriptions />} />
             </Route>
             <Route path="display" element={<Suspense fallback={null}><Display /></Suspense>} />
             <Route path="token/:ref?" element={<Suspense fallback={null}><TokenStatus /></Suspense>} />

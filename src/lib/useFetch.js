@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from './api'
 
-export function useFetch(path, { interval } = {}) {
+export function useFetch(path, { interval, anon = false } = {}) {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -9,7 +9,7 @@ export function useFetch(path, { interval } = {}) {
 
   const refetch = useCallback(async () => {
     try {
-      const next = await api(path)
+      const next = await api(path, { anon })
       if (!alive.current) return
       setData(next)
       setError(null)
@@ -18,7 +18,7 @@ export function useFetch(path, { interval } = {}) {
     } finally {
       if (alive.current) setLoading(false)
     }
-  }, [path])
+  }, [path, anon])
 
   useEffect(() => {
     alive.current = true

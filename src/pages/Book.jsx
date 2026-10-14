@@ -52,7 +52,7 @@ export default function Book() {
     catch (err) { toast(err.message, 'error') }
   }
   const checkIn = async (a) => {
-    try { const t = await api('/tokens', { method: 'POST', body: { appointmentId: a.id } }); toast(`Checked in - token ${t.code}`); navigate('/my-token') }
+    try { const t = await api('/tokens', { method: 'POST', body: { appointmentId: a.id } }); toast(`Checked in - token ${t.code}`); navigate('/my-token', { state: { fresh: t.id } }) }
     catch (err) { toast(err.message, 'error') }
   }
 

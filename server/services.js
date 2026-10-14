@@ -9,6 +9,15 @@ export const find = (list, id, label) => {
   return item
 }
 const today = () => dayOffset(0)
+
+// Shared by staff registration and the patient portal so new patients always look the same.
+export function createPatient(data) {
+  const p = { id: Math.max(0, ...db.patients.map((x) => x.id)) + 1, ...data, status: 'outpatient', bedId: null, registeredOn: today(),
+    vitals: { heartRate: 72, bp: '120/80', temp: 36.6, spo2: 98 }, history: [{ date: today(), event: 'Registered' }] }
+  db.patients.push(p)
+  logActivity(`New patient registered: ${p.name}`, 'admit')
+  return p
+}
 // Cancelled and no-show appointments no longer hold their slot.
 export const isInactive = (status) => status === 'cancelled' || status === 'no-show'
 

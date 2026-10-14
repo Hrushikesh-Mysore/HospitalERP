@@ -3,7 +3,7 @@ import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
-import { errorHandler, notFound } from './middleware/errorHandler.js'
+import { HttpError, errorHandler, notFound } from './middleware/errorHandler.js'
 import qrcode from 'qrcode-terminal'
 import { lanAddress } from './network.js'
 import { eventsHandler, broadcastWrites } from './events.js'
@@ -18,6 +18,8 @@ import tokens from './routes/tokens.js'
 import prescriptions from './routes/prescriptions.js'
 import documents from './routes/documents.js'
 import { readActor } from './actor.js'
+import { patientGuard } from './patientAccess.js'
+import portal from './routes/portal.js'
 import statusRules from './routes/statusRules.js'
 import { clearStaleUploads } from './uploads.js'
 
@@ -28,8 +30,10 @@ app.get('/api/events', eventsHandler)
 app.use('/api', rateLimit({ windowMs: 60_000, limit: 300, standardHeaders: true, legacyHeaders: false }))
 app.use(express.json({ limit: '10kb' }))
 app.use('/api', readActor)
+app.use('/api', patientGuard)
 app.use('/api', broadcastWrites)
 
+app.use('/api/portal', portal)
 app.use('/api/status-rules', statusRules)
 app.use('/api/stats', stats)
 app.use('/api/patients/:id/documents', documents)
@@ -40,7 +44,9 @@ app.use('/api/beds', beds)
 app.use('/api/emergency', emergency)
 app.use('/api/tokens', tokens)
 app.use('/api/prescriptions', prescriptions)
-app.post('/api/demo/reset', (req, res) => { resetDb(); res.json({ ok: true }) })
+app.post('/api/demo/reset', (req, res) => {
+  if (req.actor?.role === 'Patient') throw new HttpError(403, 'Patients cannot reset the demo.')
+  resetDb(); res.json({ ok: true }) })
 
 app.use(notFound)
 app.use(errorHandler)

@@ -16,7 +16,7 @@ export default function Prescriptions() {
   useLiveSync({ prescriptions: rx.refetch })
   return (
     <div className="space-y-6">
-      <PageHeader title="My prescriptions" subtitle="Newest first" />
+      <PageHeader title="My records" subtitle="Prescriptions and documents, newest first" />
       {rx.loading ? <Skeleton className="h-40" /> : rx.error ? (
         <Card><EmptyState title="Couldn't load prescriptions" text={rx.error} action={<Button onClick={rx.refetch}>Retry</Button>} /></Card>
       ) : rx.data.length === 0 ? (

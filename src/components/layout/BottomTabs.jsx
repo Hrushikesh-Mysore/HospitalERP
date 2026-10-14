@@ -49,7 +49,7 @@ export default function BottomTabs({ onHelp, onReset }) {
           )}
           <div className="space-y-1 border-t border-line pt-3">
             <button onClick={() => { setMore(false); onHelp() }} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold hover:bg-surface"><HelpCircle size={20} className="text-muted" /> How to use</button>
-            <button onClick={reset} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold hover:bg-surface"><RotateCcw size={20} className="text-muted" /> Reset demo data</button>
+            {role !== 'Patient' && <button onClick={reset} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold hover:bg-surface"><RotateCcw size={20} className="text-muted" /> Reset demo data</button>}
           </div>
         </div>
       </Modal>

@@ -45,6 +45,10 @@ const issue = z.object({
   name: z.string().trim().min(2).max(80).optional(),
 }).refine((v) => v.appointmentId || (v.doctorId && (v.patientId || v.name)), 'Provide an appointmentId, or a doctorId with a patientId or name')
 
+// A patient only sees personal details on their own tokens; others show up as a code and a position.
+const scrub = (req, v) => (req.actor?.role === 'Patient' && v.patientId !== req.actor.patientId
+  ? { ...v, name: null, patientId: null, appointmentId: null, statusHistory: undefined } : v)
+
 const r = Router()
 
 r.get('/', (req, res) => {
@@ -54,9 +58,9 @@ r.get('/', (req, res) => {
     const current = list.find((t) => t.status === 'called' || t.status === 'in-consult')
     return {
       id: d.id, name: d.name, department: d.department, avgConsultMin: avgConsultMin(d.id),
-      serving: current ? view(current) : null,
-      waiting: list.filter((t) => t.status === 'waiting').map(view),
-      skipped: list.filter((t) => t.status === 'skipped').map(view),
+      serving: current ? scrub(req, view(current)) : null,
+      waiting: list.filter((t) => t.status === 'waiting').map((t) => scrub(req, view(t))),
+      skipped: list.filter((t) => t.status === 'skipped').map((t) => scrub(req, view(t))),
       doneCount: list.filter((t) => t.status === 'done').length,
     }
   })
@@ -70,7 +74,7 @@ r.get('/:ref', (req, res) => {
   const ref = req.params.ref.toUpperCase()
   const t = db.tokens.find((x) => (/^\d+$/.test(ref) ? x.id === Number(ref) : x.date === today() && x.code === ref))
   if (!t) throw new HttpError(404, 'Token not found')
-  res.json(view(t))
+  res.json(scrub(req, view(t)))
 })
 
 r.post('/', validate(issue), (req, res) => {

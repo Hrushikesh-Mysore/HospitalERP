@@ -56,6 +56,11 @@ Both devices must be on the same network. A phone hotspot works well and needs n
 - `PATCH /api/appointments/:id/status` and `PATCH /api/patients/:id/status` accept `{ status, note? }` (note max 200). `admitted` / `discharged` are refused with a `flow` hint: use `POST /api/beds/:id/admit` and `/discharge`.
 - **Demo-level permissions:** the browser sends `X-Role` and `X-Doctor-Id` headers and the server trusts them (403 if wrong). Anyone can forge those headers, so this is not security. A real deployment needs authentication and must take identity from a verified session.
 
+## Patient portal
+Choose the **Patient** role to get a "Who are you?" screen: pick one of the two demo patients (each has an appointment, a prescription and a queue token), sign in with name + phone, or register as new. Tabs: Book, My Token, Records. A patient can book, cancel their own appointment, check in, and upload a prescription photo.
+The server gives each sign-in a random session token (`X-Patient-Token`) and takes the patient id from it, so a patient cannot read or change another patient's records, and beds, admin and staff routes return 403 (`server/patientAccess.js`, covered by `server/patient.test.js`). This is still demo-level: name + phone is not real identity verification, and requests that claim no role are not filtered. Real use needs proper authentication.
+The token slip (`/token/D2-014`) and the `/display` board are public pages and ignore the browser's role.
+
 ## Documents (demo-safe)
 - Use only the fake files in `samples/` (prescription, report, scan, discharge PDF), never real patient documents. Each is labelled "SAMPLE - FAKE DATA".
 - Upload API: `POST /api/patients/:id/documents` (multipart: `category` = prescription | report | scan, and `file`), `GET` the list, `GET .../:docId/file`, `DELETE .../:docId`. Max 20 documents per patient. Files are served only if the patient and document exist.

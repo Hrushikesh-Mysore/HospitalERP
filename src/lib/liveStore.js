@@ -15,6 +15,7 @@ const RELATED = {
   emergency: ['emergency', 'patients', 'beds', 'stats'],
   tokens: ['tokens'],
   prescriptions: ['prescriptions'],
+  portal: ['patients', 'appointments', 'stats'], // a patient registering from the portal
   demo: null, // everything
 }
 export const affects = (event, resource) => {
