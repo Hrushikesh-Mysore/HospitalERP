@@ -17,6 +17,8 @@ import emergency from './routes/emergency.js'
 import tokens from './routes/tokens.js'
 import prescriptions from './routes/prescriptions.js'
 import documents from './routes/documents.js'
+import { readActor } from './actor.js'
+import statusRules from './routes/statusRules.js'
 import { clearStaleUploads } from './uploads.js'
 
 const app = express()
@@ -25,8 +27,10 @@ app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' }))
 app.get('/api/events', eventsHandler)
 app.use('/api', rateLimit({ windowMs: 60_000, limit: 300, standardHeaders: true, legacyHeaders: false }))
 app.use(express.json({ limit: '10kb' }))
+app.use('/api', readActor)
 app.use('/api', broadcastWrites)
 
+app.use('/api/status-rules', statusRules)
 app.use('/api/stats', stats)
 app.use('/api/patients/:id/documents', documents)
 app.use('/api/patients', patients)

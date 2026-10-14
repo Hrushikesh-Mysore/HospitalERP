@@ -4,6 +4,7 @@ import { db, logActivity } from '../data/store.js'
 import { validate } from '../middleware/validate.js'
 import { dayOffset } from '../data/seed.js'
 import { find, admitToBed, sortEmergency } from '../services.js'
+import { byOf } from '../actor.js'
 import { HttpError } from '../middleware/errorHandler.js'
 
 const create = z.object({
@@ -29,7 +30,7 @@ r.post('/:id/assign-bed', validate(z.object({ bedId: z.number().int() })), (req,
     condition: c.complaint, doctorId: 1, status: 'outpatient', bedId: null, registeredOn: dayOffset(0), vitals: { heartRate: 90, bp: '120/80', temp: 37, spo2: 96 },
     history: [{ date: dayOffset(0), event: 'Emergency arrival' }] }
   db.patients.push(patient)
-  admitToBed(bed, patient)
+  admitToBed(bed, patient, byOf(req))
   Object.assign(c, { status: 'admitted', patientId: patient.id, bedId: bed.id })
   res.json(c)
 })

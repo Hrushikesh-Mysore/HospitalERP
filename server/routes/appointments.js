@@ -2,9 +2,8 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'
 import { validate } from '../middleware/validate.js'
-import { dayOffset } from '../data/seed.js'
-import { find, checkSlot, isInactive } from '../services.js'
-import { HttpError } from '../middleware/errorHandler.js'
+import { find, checkSlot, isInactive, assertAppointmentTransition, changeAppointmentStatus, NOTE_MAX, APPOINTMENT_TRANSITIONS } from '../services.js'
+import { requireRole, requireOwnership, byOf } from '../actor.js'
 import { slots } from '../data/seed.js'
 
 const create = z.object({
@@ -15,10 +14,11 @@ const create = z.object({
   reason: z.string().trim().min(2).max(120).default('Consultation'),
 })
 const patch = z.object({
-  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'no-show']).optional(),
+  status: z.enum(Object.keys(APPOINTMENT_TRANSITIONS)).optional(),
+  note: z.string().trim().max(NOTE_MAX).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   time: z.enum(slots).optional(),
-}).refine((v) => Object.keys(v).length > 0, 'Nothing to update')
+}).refine((v) => Object.keys(v).some((k) => k !== 'note'), 'Nothing to update')
 
 const r = Router()
 const expand = (a) => ({ ...a, patient: db.patients.find((p) => p.id === a.patientId)?.name ?? a.patientName, doctor: db.doctors.find((d) => d.id === a.doctorId) })
@@ -32,14 +32,26 @@ r.post('/', validate(create), (req, res) => {
   logActivity(`Appointment booked for ${patient.name}`, 'appt')
   res.status(201).json(expand(a))
 })
+// Reschedule and/or move along the status table (reception uses this one).
 r.patch('/:id', validate(patch), (req, res) => {
   const a = find('appointments', req.params.id, 'Appointment')
-  const next = { ...a, ...req.body }
-  if (['cancelled', 'no-show'].includes(a.status) && req.body.status !== undefined && req.body.status !== a.status) throw new HttpError(409, `This appointment is already ${a.status}`)
-  if (req.body.status === 'no-show' && next.date > dayOffset(0)) throw new HttpError(409, 'Can only mark no-show on or after the appointment date')
-  if (!isInactive(next.status) && (req.body.date || req.body.time)) checkSlot(next, a.id)
-  Object.assign(a, req.body)
-  logActivity(`Appointment #${a.id} is now ${a.status}`, 'appt')
+  const { status, note, ...changes } = req.body
+  const moves = status !== undefined && status !== a.status
+  if (moves) assertAppointmentTransition(a, status)
+  const next = { ...a, ...changes, ...(moves && { status }) }
+  if (!isInactive(next.status) && (changes.date || changes.time)) checkSlot(next, a.id)
+  Object.assign(a, changes)
+  if (moves) changeAppointmentStatus(a, status, { by: byOf(req), note })
+  else logActivity(`Appointment #${a.id} is now ${a.status}`, 'appt')
+  res.json(expand(a))
+})
+
+// Doctor (own appointments) and Admin only. Demo-level role check: see server/actor.js.
+const statusBody = z.object({ status: z.enum(Object.keys(APPOINTMENT_TRANSITIONS)), note: z.string().trim().max(NOTE_MAX).optional() })
+r.patch('/:id/status', requireRole('Doctor', 'Admin'), validate(statusBody), (req, res) => {
+  const a = find('appointments', req.params.id, 'Appointment')
+  requireOwnership(req, a.doctorId, 'appointments')
+  changeAppointmentStatus(a, req.body.status, { by: byOf(req), note: req.body.note })
   res.json(expand(a))
 })
 export default r

@@ -3,7 +3,8 @@ import { z } from 'zod'
 import { db, logActivity } from '../data/store.js'
 import { validate } from '../middleware/validate.js'
 import { dayOffset } from '../data/seed.js'
-import { find, isInactive } from '../services.js'
+import { find, isInactive, recordStatus, NOTE_MAX } from '../services.js'
+import { byOf } from '../actor.js'
 import { lanOrigin } from '../network.js'
 import { HttpError } from '../middleware/errorHandler.js'
 
@@ -105,6 +106,7 @@ r.post('/doctors/:doctorId/call-next', (req, res) => {
   const next = todays(doctor.id).filter((t) => t.status === 'waiting').sort(byIssue)[0]
   if (!next) throw new HttpError(409, 'No one is waiting')
   Object.assign(next, { status: 'called', calledAt: new Date().toISOString() })
+  recordStatus(next, 'waiting', 'called', byOf(req))
   logActivity(`Now serving ${next.code} at ${doctor.name}`, 'appt')
   res.json(view(next))
 })
@@ -114,20 +116,29 @@ const token = (req) => {
   if (!t) throw new HttpError(404, 'Token not found')
   return t
 }
-const move = (t, from, to, patch = {}) => {
+const noteOf = (req) => {
+  const n = req.body?.note
+  if (n === undefined) return ''
+  if (typeof n !== 'string' || n.trim().length > NOTE_MAX) throw new HttpError(400, `note must be text of at most ${NOTE_MAX} characters`)
+  return n.trim()
+}
+const move = (req, t, from, to, patch = {}) => {
+  const note = noteOf(req)
   if (!from.includes(t.status)) throw new HttpError(409, `Token ${t.code} is ${t.status}; expected ${from.join(' or ')}`)
+  const prev = t.status
   Object.assign(t, { status: to, ...patch })
+  recordStatus(t, prev, to, byOf(req), note)
 }
 const now = () => new Date().toISOString()
 
-r.post('/:id/start', (req, res) => { const t = token(req); move(t, ['called'], 'in-consult', { startedAt: now() }); res.json(view(t)) })
-r.post('/:id/finish', (req, res) => { const t = token(req); move(t, ['in-consult'], 'done', { finishedAt: now() }); res.json(view(t)) })
-r.post('/:id/skip', (req, res) => { const t = token(req); move(t, ['waiting', 'called'], 'skipped'); res.json(view(t)) })
+r.post('/:id/start', (req, res) => { const t = token(req); move(req, t, ['called'], 'in-consult', { startedAt: now() }); res.json(view(t)) })
+r.post('/:id/finish', (req, res) => { const t = token(req); move(req, t, ['in-consult'], 'done', { finishedAt: now() }); res.json(view(t)) })
+r.post('/:id/skip', (req, res) => { const t = token(req); move(req, t, ['waiting', 'called'], 'skipped'); res.json(view(t)) })
 // called -> announce again; skipped -> back in line at its ORIGINAL place (order is still by issue time)
 r.post('/:id/recall', (req, res) => {
   const t = token(req)
   if (t.status === 'called') Object.assign(t, { calledAt: now(), recalls: t.recalls + 1 })
-  else move(t, ['skipped'], 'waiting', { calledAt: null })
+  else move(req, t, ['skipped'], 'waiting', { calledAt: null })
   res.json(view(t))
 })
 

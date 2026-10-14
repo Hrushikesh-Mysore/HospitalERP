@@ -1,6 +1,9 @@
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 
 const PORT = 3098
 const base = `http://localhost:${PORT}/api`
@@ -14,7 +17,7 @@ const issue = async (doctorId, name) => (await call('POST', '/tokens', { doctorI
 const queue = async (doctorId) => (await call('GET', `/tokens?doctorId=${doctorId}`)).body.doctors[0]
 
 before(async () => {
-  server = spawn('node', ['server/index.js'], { env: { ...process.env, PORT: String(PORT) }, stdio: 'ignore' })
+  server = spawn('node', ['server/index.js'], { env: { ...process.env, PORT: String(PORT), UPLOAD_DIR: fs.mkdtempSync(path.join(os.tmpdir(), 'niera-tok-')) }, stdio: 'ignore' })
   for (let i = 0; i < 50; i++) {
     try { if ((await fetch(`${base}/doctors`)).ok) return } catch { /* not up yet */ }
     await new Promise((r) => setTimeout(r, 100))

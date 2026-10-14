@@ -13,6 +13,7 @@ MediCore is a role-aware hospital dashboard that keeps patients, appointments, b
 - Queue tokens (first come, first served): reception issues per-doctor tokens (D2-014) for walk-ins or booked appointments; doctors use Call next / Start / Finish / Skip / Recall; positions and estimated waits (avg consult minutes x people ahead) update live. Emergency triage stays a separate, higher-priority queue
 - Waiting-room board at `/display` (token codes only, no names) and a patient phone view at `/token/D2-014`
 - Patient documents: add a prescription, report or scan from a phone camera (`capture="environment"`) or a file; photos are shrunk to 1600px in the browser, shown as thumbnails with a full-screen viewer, and deleted after a confirm. Server accepts only real JPEG/PNG/WebP/PDF (checked by file signature), max 5 MB, stored under random names in `server/uploads/` (git-ignored, cleared on reset and on server start)
+- Status editing: doctors (own patients and appointments) and admins change appointment status (scheduled > checked-in > in-consult > completed, plus cancelled / no-show) and patient status (outpatient, under-observation, referred) from a status badge, with an optional note kept in a status history timeline. Admitting and discharging stay in the bed flow so beds never get out of sync. Reception sees badges; patients see their own status read-only
 - Roles: Admin, Doctor and Receptionist change the sidebar and Overview
 - Onboarding: Quick Tour, "?" how-to panel, Ctrl+K search, helpful empty states
 - Security basics: helmet, restricted CORS, rate limiting, 10kb body limit, zod validation, no stack traces in errors
@@ -49,6 +50,11 @@ Both devices must be on the same network. A phone hotspot works well and needs n
 - Estimated wait uses 10 min per consult until 3 consults are finished that day, then the doctor's measured average.
 - Counters restart each day; "Reset demo data" clears all tokens.
 - Tests: `npm test` starts the API on a spare port and checks ordering, numbering, recall and guards.
+
+## Status rules and permissions
+- Allowed moves live in one place (`server/services.js`) and are served at `GET /api/status-rules`; the UI only offers valid next statuses. Invalid moves return 409 with the allowed options.
+- `PATCH /api/appointments/:id/status` and `PATCH /api/patients/:id/status` accept `{ status, note? }` (note max 200). `admitted` / `discharged` are refused with a `flow` hint: use `POST /api/beds/:id/admit` and `/discharge`.
+- **Demo-level permissions:** the browser sends `X-Role` and `X-Doctor-Id` headers and the server trusts them (403 if wrong). Anyone can forge those headers, so this is not security. A real deployment needs authentication and must take identity from a verified session.
 
 ## Documents (demo-safe)
 - Use only the fake files in `samples/` (prescription, report, scan, discharge PDF), never real patient documents. Each is labelled "SAMPLE - FAKE DATA".

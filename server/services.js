@@ -17,7 +17,7 @@ const UNDO_MS = 6000 // 5s undo shown to the user + 1s grace for network latency
 // What deleting a patient would touch: future open appointments get cancelled, past open ones become no-shows,
 // and any waiting emergency case for the same person is dropped from the queue.
 export function deletionImpact(patient) {
-  const open = db.appointments.filter((a) => a.patientId === patient.id && ['scheduled', 'confirmed'].includes(a.status))
+  const open = db.appointments.filter((a) => a.patientId === patient.id && !['completed', 'cancelled', 'no-show'].includes(a.status))
   const sameName = (c) => c.name.trim().toLowerCase() === patient.name.trim().toLowerCase() && c.age === patient.age
   return {
     cancel: open.filter((a) => a.date >= today()),
@@ -66,11 +66,78 @@ export function restorePatient(id) {
   return { patient: t.patient, notRestored: kept }
 }
 
-export function admitToBed(bed, patient) {
+// ---- Status rules (single source of truth; the client reads them from GET /api/status-rules) ----
+// Appointment: scheduled -> (confirmed) -> checked-in -> in-consult -> completed; cancelled / no-show are final.
+export const APPOINTMENT_TRANSITIONS = {
+  scheduled: ['confirmed', 'checked-in', 'cancelled', 'no-show'],
+  confirmed: ['checked-in', 'cancelled', 'no-show'],
+  'checked-in': ['in-consult', 'cancelled', 'no-show'],
+  'in-consult': ['completed'],
+  completed: [],
+  cancelled: [],
+  'no-show': [],
+}
+// Patient: "admitted" and "discharged" are not plain status edits. They change a bed, so they only happen
+// through the bed admit / discharge flow (POST /api/beds/:id/admit and /discharge).
+export const PATIENT_STATUSES = ['outpatient', 'under-observation', 'admitted', 'discharged', 'referred']
+export const PATIENT_TRANSITIONS = {
+  outpatient: ['under-observation', 'referred'],
+  'under-observation': ['outpatient', 'referred'],
+  admitted: [], // leaves only via the discharge flow
+  discharged: ['outpatient', 'under-observation', 'referred'],
+  referred: ['outpatient', 'under-observation'],
+}
+export const NOTE_MAX = 200
+
+export function recordStatus(entity, from, to, by, note = '') {
+  ;(entity.statusHistory ??= []).push({ from, to, by: by ?? { role: 'system', doctorId: null, name: null }, at: new Date().toISOString(), note })
+}
+
+export function assertAppointmentTransition(a, to) {
+  if (a.status === to) throw new HttpError(409, `Appointment is already ${to}`)
+  const allowed = APPOINTMENT_TRANSITIONS[a.status] ?? []
+  if (!allowed.includes(to)) {
+    throw new HttpError(409, `Cannot move an appointment from ${a.status} to ${to}. ${allowed.length ? `From ${a.status} you can go to: ${allowed.join(', ')}.` : `${a.status} is a final status.`}`)
+  }
+  if (to === 'no-show' && a.date > today()) throw new HttpError(409, 'Can only mark no-show on or after the appointment date')
+}
+
+export function changeAppointmentStatus(a, to, { by, note } = {}) {
+  assertAppointmentTransition(a, to)
+  const from = a.status
+  a.status = to
+  recordStatus(a, from, to, by, note)
+  logActivity(`Appointment #${a.id} is now ${a.status}`, 'appt')
+}
+
+export function changePatientStatus(p, to, { by, note } = {}) {
+  if (to === 'admitted') {
+    throw new HttpError(409, 'Admitting needs a bed. Use the bed admit flow (POST /api/beds/:id/admit) so occupancy stays correct.', { flow: 'admit' })
+  }
+  if (p.status === 'admitted') {
+    throw new HttpError(409, `${p.name} is admitted. Discharge from the bed first (POST /api/beds/:id/discharge); the status cannot be edited directly.`, { flow: 'discharge', bedId: p.bedId })
+  }
+  if (to === 'discharged') {
+    throw new HttpError(409, 'Only an admitted patient can be discharged, and only through the bed discharge flow.', { flow: 'discharge' })
+  }
+  if (p.status === to) throw new HttpError(409, `Patient is already ${to}`)
+  if (!PATIENT_TRANSITIONS[p.status]?.includes(to)) {
+    throw new HttpError(409, `Cannot move a patient from ${p.status} to ${to}. From ${p.status} you can go to: ${PATIENT_TRANSITIONS[p.status].join(', ')}.`)
+  }
+  const from = p.status
+  p.status = to
+  p.history.push({ date: today(), event: `Status: ${from} → ${to}` })
+  recordStatus(p, from, to, by, note)
+  logActivity(`${p.name} is now ${to}`, 'admit')
+}
+
+export function admitToBed(bed, patient, by, note) {
   if (bed.status !== 'free') throw new HttpError(409, `Bed ${bed.label} is ${bed.status}, not free`)
   if (patient.status === 'admitted') throw new HttpError(409, `${patient.name} is already admitted`)
   bed.status = 'occupied'; bed.patientId = patient.id
+  const from = patient.status
   patient.status = 'admitted'; patient.bedId = bed.id
+  recordStatus(patient, from, 'admitted', by, note)
   patient.history.push({ date: today(), event: `Admitted to ${bed.label}` })
   const entry = db.admissionLog.find((e) => e.date === today())
   if (entry) entry.count++
@@ -78,10 +145,11 @@ export function admitToBed(bed, patient) {
   logActivity(`${patient.name} admitted to ${bed.ward} bed ${bed.label}`, 'admit')
 }
 
-export function dischargeBed(bed) {
+export function dischargeBed(bed, by, note) {
   if (bed.status !== 'occupied') throw new HttpError(409, `Bed ${bed.label} has no patient`)
   const patient = db.patients.find((p) => p.id === bed.patientId)
   if (patient) {
+    recordStatus(patient, patient.status, 'discharged', by, note)
     patient.status = 'discharged'; patient.bedId = null
     patient.history.push({ date: today(), event: `Discharged from ${bed.label}` })
     logActivity(`${patient.name} discharged from ${bed.label}`, 'discharge')
