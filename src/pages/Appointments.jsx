@@ -44,7 +44,7 @@ export default function Appointments() {
         {days.map((d) => {
           const k = iso(d), on = k === date
           return (
-            <button key={k} onClick={() => setDate(k)} className={`min-w-16 shrink-0 rounded-2xl border px-3 py-2 text-center transition-all ${on ? 'border-brand-600 bg-brand-600 text-white shadow-md' : 'border-line bg-card hover:bg-brand-50'}`}>
+            <button key={k} onClick={() => setDate(k)} className={`min-w-16 shrink-0 rounded-2xl border px-3 py-2 text-center transition-all ${on ? 'border-brand-600 bg-brand-600 text-on-brand shadow-md' : 'border-line bg-card hover:bg-brand-50'}`}>
               <span className="block text-xs font-medium opacity-80">{d.toLocaleDateString('en', { weekday: 'short' })}</span>
               <span className="block text-lg font-extrabold">{d.getDate()}</span>
             </button>
@@ -64,7 +64,7 @@ export default function Appointments() {
               <ol className="space-y-3 border-l-2 border-brand-100 pl-4">
                 {list.map((a, i) => (
                   <li key={a.id} style={{ '--i': i }} className="rise relative rounded-xl bg-surface p-3">
-                    <span className="absolute -left-[23px] top-4 h-3 w-3 rounded-full border-2 border-white bg-brand-500" />
+                    <span className="absolute -left-[23px] top-4 h-3 w-3 rounded-full border-2 border-card bg-brand-500" />
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm font-bold">{a.time} · {a.patient}</p>
                       <Badge tone={tone[a.status]}>{a.status}</Badge>
@@ -73,7 +73,7 @@ export default function Appointments() {
                     {next[a.status].length > 0 && (
                       <div className="mt-2 flex gap-2">
                         {next[a.status].map((s) => (
-                          <button key={s} onClick={() => setStatus(a, s)} className="rounded-lg border border-line bg-white px-2 py-1 text-xs font-semibold capitalize hover:bg-brand-50">{s === 'cancelled' ? 'Cancel' : s === 'confirmed' ? 'Confirm' : 'Complete'}</button>
+                          <button key={s} onClick={() => setStatus(a, s)} className="rounded-lg border border-line bg-card px-2 py-1 text-xs font-semibold capitalize hover:bg-brand-50">{s === 'cancelled' ? 'Cancel' : s === 'confirmed' ? 'Confirm' : 'Complete'}</button>
                         ))}
                       </div>
                     )}

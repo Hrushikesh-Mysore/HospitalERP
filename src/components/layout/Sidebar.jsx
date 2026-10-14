@@ -24,11 +24,11 @@ export default function Sidebar({ open, onClose, onReset }) {
   const label = (i) => (role === 'Doctor' && i.to === '/patients' ? 'My Patients' : role === 'Doctor' && i.to === '/appointments' ? 'My Appointments' : role === 'Receptionist' && i.to === '/patients' ? 'Registration' : role === 'Receptionist' && i.to === '/appointments' ? 'Booking' : i.label)
   return (
     <>
-      {open && <div className="fixed inset-0 z-30 bg-slate-900/40 lg:hidden" onClick={onClose} />}
+      {open && <div className="fixed inset-0 z-30 bg-overlay lg:hidden" onClick={onClose} />}
       <aside className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-line bg-card p-4 transition-transform lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="mb-6 flex items-center justify-between px-2">
           <div className="flex items-center gap-2 text-lg font-extrabold">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-white"><HeartPulse size={20} /></span>
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-on-brand"><HeartPulse size={20} /></span>
             MediCore
           </div>
           <button className="lg:hidden" onClick={onClose} aria-label="Close menu"><X size={20} /></button>

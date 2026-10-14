@@ -1,8 +1,8 @@
 const variants = {
-  primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm',
-  secondary: 'bg-white text-ink border border-line hover:bg-surface',
+  primary: 'bg-brand-600 text-on-brand hover:bg-brand-700 shadow-sm',
+  secondary: 'bg-card text-ink border border-line hover:bg-surface',
   ghost: 'text-muted hover:bg-surface hover:text-ink',
-  danger: 'bg-danger text-white hover:bg-red-700',
+  danger: 'bg-danger-solid text-white hover:brightness-90',
 }
 export default function Button({ variant = 'primary', className = '', children, ...props }) {
   return (

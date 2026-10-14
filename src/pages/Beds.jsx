@@ -56,7 +56,7 @@ export default function Beds() {
     <div className="space-y-6">
       <PageHeader title="Beds" subtitle="Click a bed to admit, discharge or mark cleaning." />
       {assignCase && (
-        <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm">
+        <div className="flex items-center gap-3 rounded-2xl border border-danger-line bg-danger-soft p-4 text-sm">
           <Siren size={18} className="shrink-0 text-danger" />
           <p className="flex-1 font-semibold">Select a free bed for <b>{assignCase.name}</b> — {assignCase.complaint} (P{assignCase.priority})</p>
           <button onClick={() => navigate('/beds', { replace: true })} aria-label="Cancel assignment"><X size={18} /></button>
@@ -67,7 +67,7 @@ export default function Beds() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex gap-1 rounded-xl bg-surface p-1">
             {wards.map((w) => (
-              <button key={w} onClick={() => { setWard(w); setOpen(null) }} className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors ${ward === w ? 'bg-white text-brand-700 shadow-sm' : 'text-muted hover:text-ink'}`}>{w}</button>
+              <button key={w} onClick={() => { setWard(w); setOpen(null) }} className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors ${ward === w ? 'bg-card text-brand-700 shadow-sm' : 'text-muted hover:text-ink'}`}>{w}</button>
             ))}
           </div>
           <div className="flex gap-4 text-xs font-medium text-muted">

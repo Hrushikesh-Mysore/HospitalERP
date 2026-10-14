@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
+import ThemeProvider from './lib/ThemeProvider'
 import { RoleProvider } from './lib/RoleContext'
 import { ToastProvider } from './components/ui/Toast'
 
@@ -12,6 +13,7 @@ const Emergency = lazy(() => import('./pages/Emergency'))
 
 export default function App() {
   return (
+    <ThemeProvider>
     <RoleProvider>
       <ToastProvider>
         <BrowserRouter>
@@ -27,5 +29,6 @@ export default function App() {
         </BrowserRouter>
       </ToastProvider>
     </RoleProvider>
+    </ThemeProvider>
   )
 }

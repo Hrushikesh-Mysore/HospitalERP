@@ -38,12 +38,12 @@
 - [x] npm run build clean
 
 ## Phase 7A — Data and roles
-- [ ] Seed dates relative to today (no hardcoded dates)
-- [ ] 14 days admission history from the API; appointments on all 7 strip days; patients in every ward
-- [ ] Reset restores full seeded state
-- [ ] Doctor / Receptionist role-specific KPIs and widgets (Admin keeps 4 global KPIs)
-- [ ] Doctor picker beside role switcher (view as any of 8 doctors)
-- [ ] curl-verify admit -> stats occupancy -> discharge
+- [x] Seed dates relative to today (no hardcoded dates)
+- [x] 14 days admission history from the API; appointments on all 7 strip days; patients in every ward
+- [x] Reset restores full seeded state
+- [x] Doctor / Receptionist role-specific KPIs and widgets (Admin keeps 4 global KPIs)
+- [x] Doctor picker beside role switcher (view as any of 8 doctors)
+- [x] curl-verify admit -> stats occupancy -> discharge
 
 ## Phase 7B — Visual polish and performance
 - [x] Bed popover flips upward near viewport bottom
@@ -53,4 +53,13 @@
 - [x] Single source for status colors
 - [x] Route-level code splitting (lazy + Suspense + Skeleton)
 - [x] Overview header: today's date + pulsing live indicator
+- [x] Build and lint clean
+
+## Phase 8 — Dark mode
+- [x] Audit hard-coded colors in src/
+- [x] Dark token set under [data-theme="dark"]; light tokens unchanged
+- [x] Hard-coded colors replaced with tokens (status, triage, overlays, skeleton, inputs)
+- [x] Charts, gridlines and tooltips follow the theme (useChartColors)
+- [x] Sun/moon toggle in top bar; system default; remembered in localStorage
+- [x] Inline script in index.html sets data-theme before first paint
 - [x] Build and lint clean

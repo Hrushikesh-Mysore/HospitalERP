@@ -39,7 +39,7 @@ export default function CommandPalette({ open, onClose }) {
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="fixed inset-0 z-[70] grid place-items-start bg-slate-900/40 p-4 pt-[15vh]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={close}>
+        <motion.div className="fixed inset-0 z-[70] grid place-items-start bg-overlay p-4 pt-[15vh]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={close}>
           <motion.div initial={{ y: -10 }} animate={{ y: 0 }} className="mx-auto w-full max-w-lg overflow-hidden rounded-2xl bg-card shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 border-b border-line px-4">
               <Search size={18} className="text-muted" />
