@@ -3,7 +3,8 @@ import Layout from './components/layout/Layout'
 import Overview from './pages/Overview'
 import Patients from './pages/Patients'
 import Appointments from './pages/Appointments'
-import Placeholder from './pages/Placeholder'
+import Beds from './pages/Beds'
+import Emergency from './pages/Emergency'
 import { ToastProvider } from './components/ui/Toast'
 
 export default function App() {
@@ -15,8 +16,8 @@ export default function App() {
             <Route index element={<Overview />} />
             <Route path="patients" element={<Patients />} />
             <Route path="appointments" element={<Appointments />} />
-            <Route path="beds" element={<Placeholder title="Beds" />} />
-            <Route path="emergency" element={<Placeholder title="Emergency" />} />
+            <Route path="beds" element={<Beds />} />
+            <Route path="emergency" element={<Emergency />} />
           </Route>
         </Routes>
       </BrowserRouter>
