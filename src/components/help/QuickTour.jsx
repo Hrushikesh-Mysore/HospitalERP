@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LayoutDashboard, Users, CalendarDays, BedDouble, Siren, UserCog } from 'lucide-react'
+import { LayoutDashboard, Users, CalendarDays, BedDouble, UserCog } from 'lucide-react'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
 

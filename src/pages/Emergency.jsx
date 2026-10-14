@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Siren } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
+import PageHeader from '../components/ui/PageHeader'
 import Skeleton from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
 import CaseCard from '../components/emergency/CaseCard'
@@ -25,10 +26,8 @@ export default function Emergency() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><h1 className="text-2xl font-extrabold">Emergency</h1><p className="text-sm text-muted">{waiting.length} waiting · refreshes every 5s</p></div>
-        <Button onClick={() => setAdding(true)}><Plus size={16} /> Add emergency case</Button>
-      </div>
+      <PageHeader title="Emergency" subtitle={`${waiting.length} waiting · refreshes every 5s`}
+        action={<Button onClick={() => setAdding(true)}><Plus size={16} /> Add emergency case</Button>} />
       {loading ? (
         <div className="space-y-3">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-24" />)}</div>
       ) : error && !data ? (

@@ -5,11 +5,16 @@ import StatCard from '../components/ui/StatCard'
 import Skeleton from '../components/ui/Skeleton'
 import { useFetch } from '../lib/useFetch'
 import Button from '../components/ui/Button'
+import PageHeader from '../components/ui/PageHeader'
+import DayTick from '../components/overview/DayTick'
+import LiveDate from '../components/overview/LiveDate'
 import EmptyState from '../components/ui/EmptyState'
 import DoctorWidgets from '../components/overview/DoctorWidgets'
 import ReceptionWidgets from '../components/overview/ReceptionWidgets'
 import { Clock, UserCheck, ClipboardList } from 'lucide-react'
-import { useRole } from '../lib/RoleContext'
+import { useRole } from '../lib/roleStore'
+import { todayISO } from '../lib/dates'
+import { feedTones } from '../lib/status'
 
 const ago = (iso) => {
   const m = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000))
@@ -18,7 +23,6 @@ const ago = (iso) => {
 
 const icons = { users: Users, bed: BedDouble, calendar: CalendarDays, activity: Activity, clock: Clock, check: UserCheck, list: ClipboardList }
 const feedIcons = { admit: UserPlus, appt: CalendarDays, alert: Siren, discharge: LogOut, bed: Sparkles }
-const feedTones = { admit: 'bg-blue-50 text-info', appt: 'bg-brand-50 text-brand-600', alert: 'bg-red-50 text-danger', discharge: 'bg-green-50 text-ok', bed: 'bg-amber-50 text-warn' }
 
 export default function Overview() {
   const { role, doctorId } = useRole()
@@ -45,7 +49,8 @@ export default function Overview() {
 
   const { kpis: k, weeklyAdmissions, appointmentsByDept: deptAppointments, activity } = data
   const d = data.doctor
-  const nextLabel = d?.nextAppointment ? `${d.nextAppointment.time}${d.nextAppointment.date === new Date().toISOString().slice(0, 10) ? '' : ` · ${d.nextAppointment.date.slice(5)}`}` : 'None'
+  const weekly = weeklyAdmissions.map((w) => ({ ...w, day: w.isToday ? 'Today (so far)' : w.day }))
+  const nextLabel = d?.nextAppointment ? `${d.nextAppointment.time}${d.nextAppointment.date === todayISO() ? '' : ` · ${d.nextAppointment.date.slice(5)}`}` : 'None'
   const kpisByRole = {
     Admin: [
       { label: 'Total Patients', value: k.totalPatients, delta: `${k.admitted} admitted`, up: true, icon: 'users', tone: 'brand' },
@@ -67,12 +72,12 @@ export default function Overview() {
   const kpis = kpisByRole[role]
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-extrabold">{role === 'Doctor' ? `Welcome, ${d?.doctor.name ?? 'Doctor'} 👋` : role === 'Receptionist' ? 'Front desk 👋' : 'Good morning 👋'}</h1>
-        <p className="text-sm text-muted">{role === 'Admin' ? "Here's what's happening at the hospital today." : role === 'Doctor' ? 'Your schedule and patients at a glance.' : 'Register patients and book appointments.'}</p>
-      </div>
+      <PageHeader
+        title={role === 'Doctor' ? `Welcome, ${d?.doctor.name ?? 'Doctor'} 👋` : role === 'Receptionist' ? 'Front desk 👋' : 'Good morning 👋'}
+        subtitle={role === 'Admin' ? "Here's what's happening at the hospital today." : role === 'Doctor' ? 'Your schedule and patients at a glance.' : 'Register patients and book appointments.'}
+        action={<LiveDate />} />
       <div className={`grid gap-4 sm:grid-cols-2 ${role === 'Admin' ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
-        {kpis.map((k) => <StatCard key={k.label} {...k} icon={icons[k.icon]} />)}
+        {kpis.map((k, i) => <StatCard key={k.label} {...k} index={i} icon={icons[k.icon]} />)}
       </div>
       {role === 'Doctor' && <DoctorWidgets />}
       {role === 'Receptionist' && <ReceptionWidgets />}
@@ -80,10 +85,10 @@ export default function Overview() {
         <Card title="Weekly admissions">
           <div className="h-64">
             <ResponsiveContainer>
-              <LineChart data={weeklyAdmissions}>
+              <LineChart data={weekly}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e8ecf0" vertical={false} />
-                <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} />
-                <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} />
+                <XAxis dataKey="day" tickLine={false} axisLine={false} interval={0} height={44} tick={<DayTick />} />
+                <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} allowDecimals={false} />
                 <Tooltip />
                 <Line type="monotone" dataKey="admissions" stroke="#0d9488" strokeWidth={3} dot={{ r: 4 }} />
               </LineChart>
@@ -107,10 +112,10 @@ export default function Overview() {
       <Card title="Recent activity">
         {activity.length === 0 && <EmptyState title="No activity yet" text="Admit a patient or book an appointment to see it here." />}
         <ul className="divide-y divide-line">
-          {activity.map((a) => {
+          {activity.map((a, i) => {
             const Icon = feedIcons[a.type]
             return (
-              <li key={a.id} className="flex items-center gap-3 py-3">
+              <li key={a.id} style={{ '--i': i }} className="rise flex items-center gap-3 py-3">
                 <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${feedTones[a.type]}`}><Icon size={17} /></span>
                 <p className="flex-1 text-sm font-medium">{a.text}</p>
                 <span className="text-xs text-muted">{ago(a.at)}</span>

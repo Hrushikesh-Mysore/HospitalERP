@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import PageSkeleton from '../ui/PageSkeleton'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 import QuickTour from '../help/QuickTour'
 import HowToPanel from '../help/HowToPanel'
 import CommandPalette from '../help/CommandPalette'
-import { useRole } from '../../lib/RoleContext'
+import { useRole } from '../../lib/roleStore'
 import { access } from '../../lib/roles'
 
 const seen = () => { try { return localStorage.getItem('tourSeen') === '1' } catch { return true } }
@@ -41,7 +42,7 @@ export default function Layout() {
       <div className="lg:pl-64">
         <TopBar onMenu={() => setOpen(true)} onSearch={() => setPalette(true)} onHelp={() => setHelp(true)} />
         <main className="p-4 lg:p-8">
-          <motion.div key={`${pathname}${search}-${resets}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}><Outlet /></motion.div>
+          <motion.div key={`${pathname}${search}-${resets}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}><Suspense fallback={<PageSkeleton />}><Outlet /></Suspense></motion.div>
         </main>
       </div>
       <QuickTour open={tour} onClose={closeTour} />

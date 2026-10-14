@@ -1,8 +1,6 @@
-import { createContext, useContext, useState } from 'react'
+import { useState } from 'react'
+import { RoleContext } from './roleStore'
 import { roles } from './roles'
-
-const RoleContext = createContext({ role: 'Admin', setRole: () => {}, doctorId: 1, setDoctorId: () => {} })
-export const useRole = () => useContext(RoleContext)
 
 const read = (key, ok, fallback) => {
   try { const v = localStorage.getItem(key); return ok(v) ? v : fallback } catch { return fallback }

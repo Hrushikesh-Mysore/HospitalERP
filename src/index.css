@@ -27,3 +27,26 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
+
+/* Staggered entrance: set style={{ '--i': index }}; total stays under 400ms. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.rise {
+  animation: rise 0.25s ease-out both;
+  animation-delay: calc(min(var(--i, 0), 6) * 25ms);
+}
+
+/* Consistent interaction states */
+:where(button, a, select, summary, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+:where(button, [role="button"]):not(:disabled) { cursor: pointer; }
+:where(button, [role="button"]):disabled { cursor: not-allowed; }
+tr[tabindex]:focus-visible { outline-offset: -2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; }
+}

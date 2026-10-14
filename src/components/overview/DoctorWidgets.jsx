@@ -6,8 +6,8 @@ import EmptyState from '../ui/EmptyState'
 import Button from '../ui/Button'
 import Skeleton from '../ui/Skeleton'
 import { useFetch } from '../../lib/useFetch'
-import { useRole } from '../../lib/RoleContext'
-import { statusTone } from '../patients/statusTone'
+import { useRole } from '../../lib/roleStore'
+import { statusTone } from '../../lib/status'
 
 export default function DoctorWidgets() {
   const { doctorId } = useRole()

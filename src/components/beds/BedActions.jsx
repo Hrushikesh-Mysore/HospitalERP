@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Button from '../ui/Button'
 import { inputCls } from '../ui/Field'
-import { useToast } from '../ui/Toast'
+import { useToast } from '../../lib/toastStore'
 import { api } from '../../lib/api'
 
 export default function BedActions({ bed, patients, onDone, onClose }) {

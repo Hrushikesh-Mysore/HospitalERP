@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Plus, Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
+import PageHeader from '../components/ui/PageHeader'
 import Badge from '../components/ui/Badge'
 import Skeleton from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
@@ -10,8 +11,8 @@ import SlideOver from '../components/ui/SlideOver'
 import { inputCls } from '../components/ui/Field'
 import AddPatientModal from '../components/patients/AddPatientModal'
 import PatientDetails from '../components/patients/PatientDetails'
-import { statusTone } from '../components/patients/statusTone'
-import { useRole } from '../lib/RoleContext'
+import { statusTone } from '../lib/status'
+import { useRole } from '../lib/roleStore'
 import { useFetch } from '../lib/useFetch'
 
 const PAGE = 10
@@ -51,10 +52,8 @@ export default function Patients() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><h1 className="text-2xl font-extrabold">Patients</h1><p className="text-sm text-muted">{rows.length} patients</p></div>
-        <Button onClick={() => setAdding(true)}><Plus size={16} /> Add patient</Button>
-      </div>
+      <PageHeader title="Patients" subtitle={`${rows.length} patients`}
+        action={<Button onClick={() => setAdding(true)}><Plus size={16} /> Add patient</Button>} />
       <Card className="!p-0">
         <div className="flex flex-wrap gap-3 border-b border-line p-4">
           <div className="relative min-w-48 flex-1">
@@ -87,8 +86,8 @@ export default function Patients() {
                 </tr>
               </thead>
               <tbody>
-                {visible.map((p) => (
-                  <tr key={p.id} onClick={() => setSelected(p)} className="cursor-pointer border-b border-line/60 transition-colors hover:bg-brand-50/50">
+                {visible.map((p, i) => (
+                  <tr key={p.id} tabIndex={0} style={{ '--i': i }} onClick={() => setSelected(p)} onKeyDown={(e) => e.key === 'Enter' && setSelected(p)} className="rise cursor-pointer border-b border-line/60 transition-colors hover:bg-brand-50/50">
                     <td className="px-4 py-3 font-semibold">{p.name}</td>
                     <td className="px-4 py-3">{p.age}</td>
                     <td className="px-4 py-3">{p.condition}</td>

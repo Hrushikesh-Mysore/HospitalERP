@@ -1,6 +1,6 @@
 import { Menu, Search, Bell, HelpCircle } from 'lucide-react'
 import { useFetch } from '../../lib/useFetch'
-import { useRole } from '../../lib/RoleContext'
+import { useRole } from '../../lib/roleStore'
 import { roles } from '../../lib/roles'
 
 export default function TopBar({ onMenu, onSearch, onHelp }) {

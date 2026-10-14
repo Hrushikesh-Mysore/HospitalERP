@@ -46,11 +46,11 @@
 - [ ] curl-verify admit -> stats occupancy -> discharge
 
 ## Phase 7B — Visual polish and performance
-- [ ] Bed popover flips upward near viewport bottom
-- [ ] KPI count-up; staggered fade-in for cards and rows (<400ms)
-- [ ] Consistent page header (title, subtitle, primary action right)
-- [ ] Consistent hover / focus-visible / active states
-- [ ] Single source for status colors
-- [ ] Route-level code splitting (lazy + Suspense + Skeleton)
-- [ ] Overview header: today's date + pulsing live indicator
-- [ ] Build and lint clean
+- [x] Bed popover flips upward near viewport bottom
+- [x] KPI count-up; staggered fade-in for cards and rows (<400ms)
+- [x] Consistent page header (title, subtitle, primary action right)
+- [x] Consistent hover / focus-visible / active states
+- [x] Single source for status colors
+- [x] Route-level code splitting (lazy + Suspense + Skeleton)
+- [x] Overview header: today's date + pulsing live indicator
+- [x] Build and lint clean

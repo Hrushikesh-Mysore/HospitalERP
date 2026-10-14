@@ -1,7 +1,7 @@
 import { CheckCircle2, PlayCircle } from 'lucide-react'
 import SlideOver from '../ui/SlideOver'
 import Button from '../ui/Button'
-import { useRole } from '../../lib/RoleContext'
+import { useRole } from '../../lib/roleStore'
 import { roles } from '../../lib/roles'
 
 const tasks = {

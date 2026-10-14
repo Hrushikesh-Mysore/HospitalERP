@@ -2,9 +2,9 @@ import { useState } from 'react'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
 import Field, { inputCls } from '../ui/Field'
-import { useToast } from '../ui/Toast'
+import { useToast } from '../../lib/toastStore'
 import { api } from '../../lib/api'
-import { triage } from './CaseCard'
+import { triage } from '../../lib/status'
 
 const empty = { name: '', age: '', complaint: '', priority: 3 }
 
