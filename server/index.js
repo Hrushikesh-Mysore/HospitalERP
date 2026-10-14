@@ -15,6 +15,7 @@ import appointments from './routes/appointments.js'
 import beds from './routes/beds.js'
 import emergency from './routes/emergency.js'
 import tokens from './routes/tokens.js'
+import prescriptions from './routes/prescriptions.js'
 
 const app = express()
 app.use(helmet())
@@ -31,6 +32,7 @@ app.use('/api/appointments', appointments)
 app.use('/api/beds', beds)
 app.use('/api/emergency', emergency)
 app.use('/api/tokens', tokens)
+app.use('/api/prescriptions', prescriptions)
 app.post('/api/demo/reset', (req, res) => { resetDb(); res.json({ ok: true }) })
 
 app.use(notFound)

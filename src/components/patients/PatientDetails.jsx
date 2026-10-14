@@ -1,9 +1,14 @@
-import { Heart, Activity, Thermometer, Droplets, Pencil, Trash2 } from 'lucide-react'
+import { Heart, Activity, Thermometer, Droplets, Pencil, Trash2, Pill } from 'lucide-react'
 import Button from '../ui/Button'
+import PrescriptionCard from './PrescriptionCard'
+import { useFetch } from '../../lib/useFetch'
+import { useLiveSync } from '../../lib/useLiveSync'
 import Badge from '../ui/Badge'
 import { statusTone } from '../../lib/status'
 
-export default function PatientDetails({ patient: p, onEdit, onDelete }) {
+export default function PatientDetails({ patient: p, onEdit, onDelete, onPrescribe }) {
+  const rx = useFetch(`/prescriptions?patientId=${p.id}`)
+  useLiveSync({ prescriptions: rx.refetch })
   const vitals = [
     { label: 'Heart rate', value: `${p.vitals.heartRate} bpm`, icon: Heart },
     { label: 'Blood pressure', value: p.vitals.bp, icon: Activity },
@@ -16,8 +21,9 @@ export default function PatientDetails({ patient: p, onEdit, onDelete }) {
         <p className="text-xl font-extrabold">{p.name}</p>
         <p className="text-sm text-muted">{p.age} yrs · {p.gender} · {p.phone}</p>
         <div className="mt-2"><Badge tone={statusTone[p.status]}>{p.status}</Badge></div>
-        {(onEdit || onDelete) && (
-          <div className="mt-3 flex gap-2">
+        {(onEdit || onDelete || onPrescribe) && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {onPrescribe && <Button onClick={onPrescribe}><Pill size={14} /> Prescribe</Button>}
             {onEdit && <Button variant="secondary" onClick={onEdit}><Pencil size={14} /> Edit</Button>}
             {onDelete && <Button variant="secondary" onClick={onDelete} className="!text-danger"><Trash2 size={14} /> Delete</Button>}
           </div>
@@ -40,6 +46,12 @@ export default function PatientDetails({ patient: p, onEdit, onDelete }) {
           ))}
         </div>
       </div>
+      {rx.data?.length > 0 && (
+        <div>
+          <p className="mb-2 text-sm font-bold">Prescriptions</p>
+          <div className="space-y-3">{rx.data.slice(0, 3).map((x) => <PrescriptionCard key={x.id} rx={x} />)}</div>
+        </div>
+      )}
       <div>
         <p className="mb-3 text-sm font-bold">History</p>
         <ol className="space-y-4 border-l-2 border-brand-100 pl-4">

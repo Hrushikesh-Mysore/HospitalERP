@@ -92,3 +92,21 @@ test('check-in from a booked appointment joins the back of the line (no jumping)
   assert.equal(checked.body.position, 2)
   assert.equal((await call('POST', '/tokens', { appointmentId: appt.id })).status, 409)
 })
+
+test('a patient can look up their own tokens, and prescriptions round-trip', async () => {
+  await call('POST', '/demo/reset')
+  await call('POST', '/tokens', { doctorId: 3, patientId: 5 })
+  const mine = (await call('GET', '/tokens?patientId=5')).body.mine
+  assert.equal(mine.length, 1)
+  assert.equal(mine[0].code, 'D3-001')
+  assert.equal((await call('GET', '/tokens?patientId=6')).body.mine.length, 0)
+
+  const before = (await call('GET', '/prescriptions?patientId=5')).body.length
+  const bad = await call('POST', '/prescriptions', { patientId: 5, doctorId: 3, medicines: [] })
+  assert.equal(bad.status, 400)
+  const ok = await call('POST', '/prescriptions', { patientId: 5, doctorId: 3, medicines: [{ name: 'Paracetamol', dose: '500 mg', frequency: 'Twice daily', days: 3 }] })
+  assert.equal(ok.status, 201)
+  const after = (await call('GET', '/prescriptions?patientId=5')).body
+  assert.equal(after.length, before + 1)
+  assert.equal(after[0].id, ok.body.id, 'newest first')
+})

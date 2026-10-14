@@ -118,3 +118,9 @@ tr[tabindex]:focus-visible { outline-offset: -2px; }
 @media (prefers-reduced-motion: reduce) {
   .rise { animation: none; }
 }
+
+/* Phone: 44px minimum touch targets (WCAG 2.5.5 / Apple HIG). Opt out with .tap-auto. */
+@media (max-width: 1023px) {
+  :where(button, select, input:not([type="checkbox"]):not([type="radio"])):not(.tap-auto) { min-height: 2.75rem; }
+  :where(button[aria-label]):not(.tap-auto) { min-width: 2.75rem; }
+}

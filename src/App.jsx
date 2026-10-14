@@ -10,6 +10,9 @@ const Patients = lazy(() => import('./pages/Patients'))
 const Appointments = lazy(() => import('./pages/Appointments'))
 const Beds = lazy(() => import('./pages/Beds'))
 const Emergency = lazy(() => import('./pages/Emergency'))
+const Book = lazy(() => import('./pages/Book'))
+const MyToken = lazy(() => import('./pages/MyToken'))
+const Prescriptions = lazy(() => import('./pages/Prescriptions'))
 const Queue = lazy(() => import('./pages/Queue'))
 const Display = lazy(() => import('./pages/Display'))
 const TokenStatus = lazy(() => import('./pages/TokenStatus'))
@@ -28,6 +31,9 @@ export default function App() {
               <Route path="beds" element={<Beds />} />
               <Route path="emergency" element={<Emergency />} />
               <Route path="queue" element={<Queue />} />
+              <Route path="book" element={<Book />} />
+              <Route path="my-token" element={<MyToken />} />
+              <Route path="prescriptions" element={<Prescriptions />} />
             </Route>
             <Route path="display" element={<Suspense fallback={null}><Display /></Suspense>} />
             <Route path="token/:ref?" element={<Suspense fallback={null}><TokenStatus /></Suspense>} />

@@ -88,8 +88,20 @@ export function buildData() {
   const counts = [21, 26, 24, 31, 28, 19, 16, 22, 27, 25, 34, 30, 21, 9]
   const admissionLog = counts.map((count, i) => ({ date: dayOffset(i - 13), count }))
 
+  const meds = [
+    ['Amlodipine', '5 mg', 'Once daily', 30], ['Metformin', '500 mg', 'Twice daily, with meals', 30], ['Salbutamol inhaler', '2 puffs', 'When needed', 14],
+    ['Paracetamol', '500 mg', 'Every 6 hours if fever', 5], ['Atorvastatin', '10 mg', 'At night', 30], ['Amoxicillin', '500 mg', 'Three times daily', 7],
+    ['Cetirizine', '10 mg', 'Once daily', 7], ['Ibuprofen', '400 mg', 'Twice daily after meals', 5],
+  ]
+  const prescriptions = Array.from({ length: 12 }, (_, i) => ({
+    id: i + 1, patientId: i + 1, doctorId: patients[i].doctorId, date: dayOffset(-(1 + i * 2)),
+    medicines: [meds[i % 8], meds[(i + 3) % 8]].slice(0, 1 + (i % 2)).map(([name, dose, frequency, days]) => ({ name, dose, frequency, days })),
+    notes: i % 3 === 0 ? 'Drink plenty of fluids and review in one week.' : '',
+  }))
+
   return {
     patients, doctors, beds, appointments, emergency, admissionLog,
+    prescriptions,
     tokens: [], // first-come-first-served queue tokens; start empty so reset clears them
     activity: [
       { id: 1, text: `${patients[4].name} admitted to General bed G-05`, type: 'admit', at: new Date(now - 2 * 60000).toISOString() },

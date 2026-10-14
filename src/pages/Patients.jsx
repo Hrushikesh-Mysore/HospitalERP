@@ -11,6 +11,7 @@ import SlideOver from '../components/ui/SlideOver'
 import { inputCls } from '../components/ui/Field'
 import AddPatientModal from '../components/patients/AddPatientModal'
 import PatientDetails from '../components/patients/PatientDetails'
+import PrescribeModal from '../components/patients/PrescribeModal'
 import DeletePatientModal from '../components/patients/DeletePatientModal'
 import { useToast } from '../lib/toastStore'
 import { api } from '../lib/api'
@@ -38,6 +39,7 @@ export default function Patients() {
   const [adding, setAdding] = useState(false)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
+  const [prescribing, setPrescribing] = useState(null)
   const toast = useToast()
   const canEdit = role === 'Admin' || role === 'Receptionist'
   const canDelete = role === 'Admin'
@@ -94,7 +96,22 @@ export default function Patients() {
         ) : visible.length === 0 ? (
           <EmptyState icon={Users} title="No patients match" text="Try clearing filters or register a new patient." action={<Button onClick={() => { setQ(''); setStatus(''); setWard('') }} variant="secondary">Clear filters</Button>} />
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <ul className="space-y-2 p-3 md:hidden">
+            {visible.map((p, i) => (
+              <li key={p.id}>
+                <button onClick={() => setSelected(p)} style={{ '--i': i }} className="rise block w-full rounded-2xl border border-line bg-card p-4 text-left active:bg-brand-50/50">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-bold">{p.name}</p>
+                    <Badge tone={statusTone[p.status]}>{p.status}</Badge>
+                  </div>
+                  <p className="mt-1 text-sm text-muted">{p.age} yrs · {p.condition}</p>
+                  <p className="text-xs text-muted">{p.doctor?.name}</p>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-line text-xs uppercase tracking-wide text-muted">
@@ -118,6 +135,7 @@ export default function Patients() {
               </tbody>
             </table>
           </div>
+          </>
         )}
         <div className="flex items-center justify-between border-t border-line p-4 text-sm text-muted">
           <span>Page {cur + 1} of {pages}</span>
@@ -128,11 +146,12 @@ export default function Patients() {
         </div>
       </Card>
       <SlideOver open={!!selected} onClose={() => setSelected(null)} title="Patient details">
-        {selected && <PatientDetails patient={selected} onEdit={canEdit ? () => setEditing(selected) : undefined} onDelete={canDelete ? () => setDeleting(selected) : undefined} />}
+        {selected && <PatientDetails patient={selected} onEdit={canEdit ? () => setEditing(selected) : undefined} onDelete={canDelete ? () => setDeleting(selected) : undefined} onPrescribe={role === 'Doctor' ? () => setPrescribing(selected) : undefined} />}
       </SlideOver>
       <AddPatientModal open={adding} onClose={() => setAdding(false)} doctors={docs.data?.doctors ?? []} onCreated={pts.refetch} />
       <AddPatientModal key={editing?.id ?? 'none'} patient={editing} open={!!editing} onClose={() => setEditing(null)} doctors={docs.data?.doctors ?? []}
         onCreated={(p) => { pts.refetch(); setSelected(p) }} />
+      {prescribing && <PrescribeModal patient={prescribing} doctorId={doctorId} onClose={() => setPrescribing(null)} />}
       <DeletePatientModal patient={deleting} onClose={() => setDeleting(null)} onDeleted={onDeleted} />
     </div>
   )

@@ -12,7 +12,9 @@ const write = (key, v) => {
 export function RoleProvider({ children }) {
   const [role, setRoleState] = useState(() => read('role', (r) => roles.includes(r), 'Admin'))
   const [doctorId, setDoctorState] = useState(() => Number(read('doctorId', (d) => Number(d) >= 1 && Number(d) <= 8, '1')))
+  const [patientId, setPatientState] = useState(() => Number(read('patientId', (d) => Number(d) >= 1, '1')))
   const setRole = (r) => { setRoleState(r); write('role', r) }
   const setDoctorId = (d) => { setDoctorState(Number(d)); write('doctorId', d) }
-  return <RoleContext.Provider value={{ role, setRole, doctorId, setDoctorId }}>{children}</RoleContext.Provider>
+  const setPatientId = (p) => { setPatientState(Number(p)); write('patientId', p) }
+  return <RoleContext.Provider value={{ role, setRole, doctorId, setDoctorId, patientId, setPatientId }}>{children}</RoleContext.Provider>
 }

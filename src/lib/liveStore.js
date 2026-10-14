@@ -14,6 +14,7 @@ const RELATED = {
   beds: ['beds', 'patients', 'emergency', 'stats'],
   emergency: ['emergency', 'patients', 'beds', 'stats'],
   tokens: ['tokens'],
+  prescriptions: ['prescriptions'],
   demo: null, // everything
 }
 export const affects = (event, resource) => {
