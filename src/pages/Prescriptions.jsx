@@ -4,6 +4,7 @@ import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
 import PageHeader from '../components/ui/PageHeader'
 import Skeleton from '../components/ui/Skeleton'
+import PatientDocuments from '../components/patients/PatientDocuments'
 import PrescriptionCard from '../components/patients/PrescriptionCard'
 import { useFetch } from '../lib/useFetch'
 import { useLiveSync } from '../lib/useLiveSync'
@@ -23,6 +24,7 @@ export default function Prescriptions() {
       ) : (
         <div className="space-y-3">{rx.data.map((p) => <PrescriptionCard key={p.id} rx={p} />)}</div>
       )}
+      <Card title="Paper prescriptions & reports"><PatientDocuments patientId={patientId} /></Card>
     </div>
   )
 }

@@ -12,6 +12,7 @@ MediCore is a role-aware hospital dashboard that keeps patients, appointments, b
 - Live sync: changes made on one device appear on every other open device within a moment (Server-Sent Events, 5s polling fallback); a green "Live" dot in the top bar shows the connection
 - Queue tokens (first come, first served): reception issues per-doctor tokens (D2-014) for walk-ins or booked appointments; doctors use Call next / Start / Finish / Skip / Recall; positions and estimated waits (avg consult minutes x people ahead) update live. Emergency triage stays a separate, higher-priority queue
 - Waiting-room board at `/display` (token codes only, no names) and a patient phone view at `/token/D2-014`
+- Patient documents: add a prescription, report or scan from a phone camera (`capture="environment"`) or a file; photos are shrunk to 1600px in the browser, shown as thumbnails with a full-screen viewer, and deleted after a confirm. Server accepts only real JPEG/PNG/WebP/PDF (checked by file signature), max 5 MB, stored under random names in `server/uploads/` (git-ignored, cleared on reset and on server start)
 - Roles: Admin, Doctor and Receptionist change the sidebar and Overview
 - Onboarding: Quick Tour, "?" how-to panel, Ctrl+K search, helpful empty states
 - Security basics: helmet, restricted CORS, rate limiting, 10kb body limit, zod validation, no stack traces in errors
@@ -48,6 +49,11 @@ Both devices must be on the same network. A phone hotspot works well and needs n
 - Estimated wait uses 10 min per consult until 3 consults are finished that day, then the doctor's measured average.
 - Counters restart each day; "Reset demo data" clears all tokens.
 - Tests: `npm test` starts the API on a spare port and checks ordering, numbering, recall and guards.
+
+## Documents (demo-safe)
+- Use only the fake files in `samples/` (prescription, report, scan, discharge PDF), never real patient documents. Each is labelled "SAMPLE - FAKE DATA".
+- Upload API: `POST /api/patients/:id/documents` (multipart: `category` = prescription | report | scan, and `file`), `GET` the list, `GET .../:docId/file`, `DELETE .../:docId`. Max 20 documents per patient. Files are served only if the patient and document exist.
+- Deleting a patient removes their files once the 5s undo window passes.
 
 ## 3-minute demo script
 1. **0:00 Overview** — point out live KPIs and charts. Close the Quick Tour, open "?" to show per-role how-tos.

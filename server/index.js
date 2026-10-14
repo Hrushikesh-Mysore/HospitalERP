@@ -16,6 +16,8 @@ import beds from './routes/beds.js'
 import emergency from './routes/emergency.js'
 import tokens from './routes/tokens.js'
 import prescriptions from './routes/prescriptions.js'
+import documents from './routes/documents.js'
+import { clearStaleUploads } from './uploads.js'
 
 const app = express()
 app.use(helmet())
@@ -26,6 +28,7 @@ app.use(express.json({ limit: '10kb' }))
 app.use('/api', broadcastWrites)
 
 app.use('/api/stats', stats)
+app.use('/api/patients/:id/documents', documents)
 app.use('/api/patients', patients)
 app.use('/api/doctors', doctors)
 app.use('/api/appointments', appointments)
@@ -38,6 +41,7 @@ app.post('/api/demo/reset', (req, res) => { resetDb(); res.json({ ok: true }) })
 app.use(notFound)
 app.use(errorHandler)
 
+clearStaleUploads()
 const port = process.env.PORT || 3001
 const clientPort = process.env.CLIENT_PORT || 5173
 

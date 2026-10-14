@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+# Uploaded patient documents (demo data)
+server/uploads/
